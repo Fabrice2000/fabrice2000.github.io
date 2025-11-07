@@ -7,8 +7,13 @@ import Avatar from './Avatar'; // Avatar de fallback
 function WalkingAvatar({ scale = 2, position = [0, -2, 0] }) {
   const [hasError, setHasError] = useState(false);
   
+  // Chemin adaptatif selon l'environnement
+  const modelPath = process.env.NODE_ENV === 'development' 
+    ? `${process.env.PUBLIC_URL || ''}/marche.glb`
+    : '/portfolio-3d/marche.glb';
+  
   // Les hooks doivent toujours être appelés en dehors de tout bloc conditionnel
-  const gltf = useGLTF('/marche.glb');
+  const gltf = useGLTF(modelPath);
   const { actions, mixer } = useAnimations(gltf.animations, gltf.scene);
   
   useEffect(() => {
@@ -197,6 +202,9 @@ const IntroPage = React.memo(({ onIntroComplete }) => {
 });
 
 // Préchargement des modèles
-useGLTF.preload('/marche.glb');
+const preloadPath = process.env.NODE_ENV === 'development' 
+  ? `${process.env.PUBLIC_URL || ''}/marche.glb`
+  : '/portfolio-3d/marche.glb';
+useGLTF.preload(preloadPath);
 
 export default IntroPage;

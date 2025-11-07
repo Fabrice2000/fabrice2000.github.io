@@ -63,7 +63,10 @@ function Portfolio() {
       <nav className="navigation">
         <div className="nav-brand">
           <div className="profile-photo">
-            <img src="/ma photo.png" alt="Fabrice KOUADJEU" className="profile-img" />
+            <img src={process.env.NODE_ENV === 'development' 
+              ? `${process.env.PUBLIC_URL || ''}/photo-profile.png`
+              : '/portfolio-3d/photo-profile.png'} 
+              alt="Fabrice KOUADJEU" className="profile-img" />
           </div>
           <h2>Fabrice KOUADJEU</h2>
         </div>

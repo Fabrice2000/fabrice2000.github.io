@@ -10,18 +10,6 @@ function Accueil({ onNavigate }) {
   const [autoRotate, setAutoRotate] = useState(true);
   const [lastMousePosition, setLastMousePosition] = useState({ x: 0, y: 0 });
   const [freeViewMode, setFreeViewMode] = useState(false);
-  const [currentAnimation, setCurrentAnimation] = useState('bonjour');
-  const [showAnimationControls, setShowAnimationControls] = useState(false);
-
-  // Animations disponibles avec leurs descriptions
-  const availableAnimations = [
-    { id: 'bonjour', name: '👋 Salut', description: 'Animation de présentation' },
-    { id: 'praying', name: '🙏 Prière', description: 'Posture respectueuse' },
-    { id: 'dancing', name: '💃 Danse Rumba', description: 'Mouvement énergique' },
-    { id: 'walking-happy', name: '😊 Marche Joyeuse', description: 'Démarche positive' },
-    { id: 'walking-slow', name: '🚶 Marche Lente', description: 'Allure réfléchie' },
-    { id: 'walking-fast', name: '🏃 Marche Rapide', description: 'Pas déterminé' },
-  ];
   
   useEffect(() => {
     // Petite animation d'entrée personnalisée
@@ -219,33 +207,7 @@ function Accueil({ onNavigate }) {
                     >
                       ↻ Reset 3D
                     </button>
-                    <button 
-                      className="animation-button" 
-                      onClick={() => setShowAnimationControls(!showAnimationControls)}
-                      title="Changer l'animation"
-                    >
-                      🎭 Animations
-                    </button>
                   </div>
-                  
-                  {/* Contrôles d'animation */}
-                  {showAnimationControls && (
-                    <div className="animation-controls" style={{ pointerEvents: 'auto' }}>
-                      <div className="animation-title">Choisir un mouvement :</div>
-                      <div className="animation-grid">
-                        {availableAnimations.map(anim => (
-                          <button
-                            key={anim.id}
-                            className={`animation-option ${currentAnimation === anim.id ? 'active' : ''}`}
-                            onClick={() => setCurrentAnimation(anim.id)}
-                            title={anim.description}
-                          >
-                            {anim.name}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
               
@@ -288,12 +250,7 @@ function Accueil({ onNavigate }) {
                   (avatarRotation.y * Math.PI) / 180,
                   (avatarRotation.z * Math.PI) / 180
                 ]}>
-                  <Avatar 
-                    scale={2} 
-                    position={[0, -1.8, 0]} 
-                    animationType={currentAnimation}
-                    enableMovement={true}
-                  />
+                  <Avatar scale={2} position={[0, -1.8, 0]} />
                 </group>
                 <OrbitControls 
                   enableZoom={freeViewMode} 
@@ -318,7 +275,10 @@ function Accueil({ onNavigate }) {
           <h3>👨‍💻 À propos de moi</h3>
           <div className="about-content">
             <div className="about-photo-section">
-              <img src="/ma photo.png" alt="Fabrice KOUADJEU" className="about-photo" />
+              <img src={process.env.NODE_ENV === 'development' 
+                ? `${process.env.PUBLIC_URL || ''}/photo-profile.png`
+                : '/portfolio-3d/photo-profile.png'} 
+                alt="Fabrice KOUADJEU" className="about-photo" />
             </div>
             <div className="about-text">
               <p>
