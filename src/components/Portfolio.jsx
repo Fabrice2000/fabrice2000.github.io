@@ -77,13 +77,17 @@ function Portfolio() {
     <>
       {/* Page d'introduction avec avatar qui marche */}
       {showIntro && (
-        <IntroPage onIntroComplete={handleIntroComplete} />
+        <IntroPage 
+          key="intro-page" 
+          onIntroComplete={handleIntroComplete} 
+        />
       )}
       
       {/* Portfolio principal */}
-      <div className={`portfolio-container ${showIntro ? 'hidden' : 'visible'}`}>
-      {/* Barre de progression pour indiquer la section active */}
-      <div className="progress-bar">
+      {!showIntro && (
+        <div className={`portfolio-container visible`} key="main-portfolio">
+        {/* Barre de progression pour indiquer la section active */}
+        <div className="progress-bar">
         <div 
           className="progress-fill" 
           style={{
@@ -228,7 +232,8 @@ function Portfolio() {
           </div>
         </div>
       </footer>
-      </div>
+        </div>
+      )}
     </>
   );
 }
