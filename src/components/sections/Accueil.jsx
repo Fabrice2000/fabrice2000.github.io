@@ -1,7 +1,63 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import Avatar from '../Avatar';
+
+// Hook pour détecter la taille d'écran et optimiser les performances
+const useResponsiveSettings = () => {
+  const [settings, setSettings] = useState({
+    isMobile: false,
+    isTablet: false,
+    screenSize: 'desktop',
+    performance: 'high'
+  });
+  
+  useEffect(() => {
+    const updateSettings = () => {
+      const width = window.innerWidth;
+      // const height = window.innerHeight; // Commenté car non utilisé actuellement
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const isTablet = width >= 768 && width <= 1024;
+      
+      let screenSize, performance;
+      
+      if (width < 576) {
+        screenSize = 'mobile-sm';
+        performance = 'low';
+      } else if (width < 768) {
+        screenSize = 'mobile-lg';
+        performance = 'low';
+      } else if (width < 992) {
+        screenSize = 'tablet';
+        performance = 'medium';
+      } else if (width < 1200) {
+        screenSize = 'laptop';
+        performance = 'medium';
+      } else {
+        screenSize = 'desktop';
+        performance = 'high';
+      }
+      
+      setSettings({
+        isMobile: isMobile && width < 768,
+        isTablet: isTablet,
+        screenSize,
+        performance
+      });
+    };
+    
+    updateSettings();
+    window.addEventListener('resize', updateSettings);
+    window.addEventListener('orientationchange', updateSettings);
+    
+    return () => {
+      window.removeEventListener('resize', updateSettings);
+      window.removeEventListener('orientationchange', updateSettings);
+    };
+  }, []);
+  
+  return settings;
+};
 
 function Accueil({ onNavigate }) {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -11,6 +67,9 @@ function Accueil({ onNavigate }) {
   const [lastMousePosition, setLastMousePosition] = useState({ x: 0, y: 0 });
   const [freeViewMode, setFreeViewMode] = useState(false);
   
+  // Paramètres responsifs
+  const { isMobile, isTablet, performance } = useResponsiveSettings();
+  
   useEffect(() => {
     // Petite animation d'entrée personnalisée
     const timer = setTimeout(() => {
@@ -19,41 +78,76 @@ function Accueil({ onNavigate }) {
     return () => clearTimeout(timer);
   }, []);
 
-  // Fonctions pour contrôler la rotation 3D de l'avatar principal
+  // Fonctions pour contrôler la rotation 3D de l'avatar principal (adaptées mobile)
+  const handleMouseMove = useCallback((e) => {
+    if (isDragging && !isMobile) {
+      const deltaX = e.clientX - lastMousePosition.x;
+      const deltaY = e.clientY - lastMousePosition.y;
+      
+      // Rotation 3D avec sensibilité adaptée
+      const sensitivity = isTablet ? 0.08 : 0.12;
+      setAvatarRotation(prev => ({
+        x: prev.x + deltaY * sensitivity,
+        y: prev.y + deltaX * sensitivity,
+        z: prev.z
+      }));
+      
+      setLastMousePosition({ x: e.clientX, y: e.clientY });
+    }
+  }, [isDragging, isMobile, isTablet, lastMousePosition]);
+
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
   const handleMouseDown = (e) => {
+    if (isMobile) return; // Désactive sur mobile pour éviter les conflits
     setIsDragging(true);
     setAutoRotate(false);
     setLastMousePosition({ x: e.clientX, y: e.clientY });
     e.preventDefault();
   };
 
-  const handleMouseMove = (e) => {
-    if (isDragging) {
-      const deltaX = e.clientX - lastMousePosition.x;
-      const deltaY = e.clientY - lastMousePosition.y;
+  // Contrôles tactiles pour mobile
+  const handleTouchStart = (e) => {
+    if (!isMobile || e.touches.length !== 1) return;
+    setIsDragging(true);
+    setAutoRotate(false);
+    const touch = e.touches[0];
+    setLastMousePosition({ x: touch.clientX, y: touch.clientY });
+    e.preventDefault();
+  };
+
+  const handleTouchMove = (e) => {
+    if (isDragging && isMobile && e.touches.length === 1) {
+      const touch = e.touches[0];
+      const deltaX = touch.clientX - lastMousePosition.x;
+      const deltaY = touch.clientY - lastMousePosition.y;
       
-      // Rotation 3D avec sensibilité très douce pour des mouvements naturels
+      // Sensibilité réduite pour mobile
       setAvatarRotation(prev => ({
-        x: prev.x + deltaY * 0.12, // Mouvement vertical → rotation X (réduit à 0.12 pour fluidité)
-        y: prev.y + deltaX * 0.12, // Mouvement horizontal → rotation Y (réduit à 0.12 pour fluidité)
-        z: prev.z // Z reste inchangé pour l'instant
+        x: prev.x + deltaY * 0.05,
+        y: prev.y + deltaX * 0.05,
+        z: prev.z
       }));
       
-      setLastMousePosition({ x: e.clientX, y: e.clientY });
+      setLastMousePosition({ x: touch.clientX, y: touch.clientY });
+      e.preventDefault();
     }
   };
 
-  const handleMouseUp = () => {
+  const handleTouchEnd = () => {
     setIsDragging(false);
   };
 
-  // Rotation Z avec la molette (sensibilité très douce)
+  // Rotation Z avec la molette (désactivée sur mobile)
   const handleWheel = (e) => {
-    if (!autoRotate) {
+    if (!autoRotate && !isMobile) {
       e.preventDefault();
+      const sensitivity = isTablet ? 0.02 : 0.04;
       setAvatarRotation(prev => ({
         ...prev,
-        z: prev.z + e.deltaY * 0.04 // Réduit à 0.04 pour mouvement ultra-smooth
+        z: prev.z + e.deltaY * sensitivity
       }));
     }
   };
@@ -73,14 +167,18 @@ function Accueil({ onNavigate }) {
   };
 
   useEffect(() => {
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    if (!isMobile) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
     
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      if (!isMobile) {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      }
     };
-  }, [isDragging]);
+  }, [isMobile, handleMouseMove, handleMouseUp]); // Dépendances corrigées
 
   return (
     <div className={`accueil-container ${isLoaded ? 'loaded' : ''}`}>
@@ -140,7 +238,15 @@ function Accueil({ onNavigate }) {
                 className={`main-avatar-control ${isDragging ? 'dragging' : ''} ${freeViewMode ? 'free-view-active' : ''}`}
                 onMouseDown={!freeViewMode ? handleMouseDown : undefined}
                 onWheel={!freeViewMode ? handleWheel : undefined}
-                style={{ cursor: freeViewMode ? 'default' : (isDragging ? 'grabbing' : 'grab') }}
+                onTouchStart={!freeViewMode ? handleTouchStart : undefined}
+                onTouchMove={!freeViewMode ? handleTouchMove : undefined}
+                onTouchEnd={!freeViewMode ? handleTouchEnd : undefined}
+                style={{ 
+                  cursor: freeViewMode ? 'default' : 
+                          isMobile ? 'grab' : 
+                          (isDragging ? 'grabbing' : 'grab'),
+                  touchAction: isMobile ? 'none' : 'auto'
+                }}
               >
                 <div className="main-control-indicators">
                   <div className="main-rotation-3d-indicator">
@@ -156,18 +262,28 @@ function Accueil({ onNavigate }) {
                   </div>
                   <div className="main-instruction-text">
                     {freeViewMode ? 'Mode Vue Libre Activé' : 
-                     autoRotate ? 'Rotation auto - Glissez pour contrôler en 3D' : 'Contrôle 3D actif'}
+                     autoRotate ? (isMobile ? 'Tapez pour contrôler' : 'Rotation auto - Glissez pour contrôler en 3D') : 
+                     'Contrôle 3D actif'}
                   </div>
                   {!freeViewMode && (
                     <div className="control-help">
-                      <div>🖱️ Glisser : X + Y</div>
-                      <div>🖲️ Molette : Z</div>
+                      {isMobile ? (
+                        <>
+                          <div>� Glisser : X + Y</div>
+                          <div>🔄 Rotation tactile</div>
+                        </>
+                      ) : (
+                        <>
+                          <div>�🖱️ Glisser : X + Y</div>
+                          <div>🖲️ Molette : Z</div>
+                        </>
+                      )}
                     </div>
                   )}
                   {freeViewMode && (
                     <div className="control-help">
-                      <div>🖱️ Glisser : Rotation libre</div>
-                      <div>🖲️ Molette : Zoom</div>
+                      <div>{isMobile ? '� Glisser : Rotation libre' : '�🖱️ Glisser : Rotation libre'}</div>
+                      <div>{isMobile ? '🤏 Pincer : Zoom' : '🖲️ Molette : Zoom'}</div>
                     </div>
                   )}
                   <div className="quick-controls" style={{ pointerEvents: 'auto' }}>
@@ -185,13 +301,15 @@ function Accueil({ onNavigate }) {
                     >
                       🟢↻
                     </button>
-                    <button 
-                      className="quick-button z-rotate" 
-                      onClick={() => setAvatarRotation(prev => ({...prev, z: prev.z + 15}))}
-                      title="Rotation Z +15° (douce)"
-                    >
-                      🔵↻
-                    </button>
+                    {!isMobile && (
+                      <button 
+                        className="quick-button z-rotate" 
+                        onClick={() => setAvatarRotation(prev => ({...prev, z: prev.z + 15}))}
+                        title="Rotation Z +15° (douce)"
+                      >
+                        🔵↻
+                      </button>
+                    )}
                   </div>
                   <div className="main-action-buttons" style={{ pointerEvents: 'auto' }}>
                     <button 
@@ -211,57 +329,72 @@ function Accueil({ onNavigate }) {
                 </div>
               </div>
               
-              <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
-                {/* J'ai travaillé longtemps sur l'éclairage pour que mon avatar soit parfait */}
-                <ambientLight intensity={2.2} />
+              <Canvas 
+                camera={{ position: [0, 0, 5], fov: 50 }}
+                gl={{ 
+                  antialias: performance !== 'low', 
+                  alpha: true,
+                  powerPreference: isMobile ? "low-power" : "high-performance"
+                }}
+                shadows={performance === 'high'}
+                dpr={isMobile ? 1 : Math.min(window.devicePixelRatio, 2)}
+              >
+                {/* Éclairage adaptatif selon les performances */}
+                <ambientLight intensity={isMobile ? 1.8 : 2.2} />
                 
-                {/* Lumière principale qui éclaire bien le visage */}
+                {/* Lumière principale adaptée */}
                 <directionalLight 
                   position={[0, 10, 12]} 
-                  intensity={4} 
+                  intensity={isMobile ? 3 : 4} 
                   color="#ffffff"
-                  castShadow={false}
+                  castShadow={performance === 'high'}
                 />
                 
-                {/* Deux spots sur les côtés */}
-                <pointLight position={[6, 4, 10]} intensity={3} color="#ffffff" />
-                <pointLight position={[-6, 4, 10]} intensity={3} color="#ffffff" />
+                {/* Éclairage complet uniquement sur desktop */}
+                {performance !== 'low' && (
+                  <>
+                    <pointLight position={[6, 4, 10]} intensity={3} color="#ffffff" />
+                    <pointLight position={[-6, 4, 10]} intensity={3} color="#ffffff" />
+                    <pointLight position={[0, -4, 8]} intensity={2.5} color="#f8f8f8" />
+                    <pointLight position={[4, 0, 6]} intensity={1.8} color="#64b5f6" />
+                    <pointLight position={[-4, 0, 6]} intensity={1.8} color="#42a5f5" />
+                  </>
+                )}
                 
-                {/* Éclairage par le bas pour éviter les ombres */}
-                <pointLight position={[0, -4, 8]} intensity={2.5} color="#f8f8f8" />
+                {/* Éclairage simplifié pour mobile */}
+                {performance === 'low' && (
+                  <>
+                    <pointLight position={[2, 2, 6]} intensity={2} color="#ffffff" />
+                    <pointLight position={[-2, 2, 6]} intensity={2} color="#ffffff" />
+                  </>
+                )}
                 
-                {/* Un peu de couleur bleue pour le style */}
-                <pointLight position={[4, 0, 6]} intensity={1.8} color="#64b5f6" />
-                <pointLight position={[-4, 0, 6]} intensity={1.8} color="#42a5f5" />
-                
-                {/* Éclairage d'arrière-plan avec une touche verte */}
+                {/* Éclairage d'arrière-plan */}
                 <directionalLight 
                   position={[0, 0, -10]} 
-                  intensity={2} 
+                  intensity={isMobile ? 1.5 : 2} 
                   color="#81c784"
                 />
-                
-                {/* Finitions pour un rendu uniforme */}
-                <pointLight position={[2, 6, 4]} intensity={1.5} color="#e8f4fd" />
-                <pointLight position={[-2, 6, 4]} intensity={1.5} color="#e8f4fd" />
                 
                 <group rotation={[
                   (avatarRotation.x * Math.PI) / 180,
                   (avatarRotation.y * Math.PI) / 180,
                   (avatarRotation.z * Math.PI) / 180
                 ]}>
-                  <Avatar scale={2} position={[0, -1.8, 0]} />
+                  <Avatar scale={isMobile ? 1.5 : 2} position={[0, isMobile ? -1.5 : -1.8, 0]} />
                 </group>
                 <OrbitControls 
                   enableZoom={freeViewMode} 
                   enablePan={freeViewMode} 
                   enableRotate={freeViewMode}
-                  autoRotate={autoRotate} 
-                  autoRotateSpeed={0.3} 
+                  autoRotate={autoRotate && !isMobile} 
+                  autoRotateSpeed={isMobile ? 0.1 : 0.3} 
                   minDistance={3}
                   maxDistance={10}
                   enableDamping={true}
-                  dampingFactor={0.05}
+                  dampingFactor={isMobile ? 0.1 : 0.05}
+                  maxPolarAngle={Math.PI / 1.6}
+                  minPolarAngle={Math.PI / 4}
                 />
               </Canvas>
             </div>

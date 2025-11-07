@@ -3,6 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import './Portfolio.css';
 import './IntroPage.css';
+import './Responsive.css';
 
 // Mes différentes sections du portfolio
 import Accueil from './sections/Accueil';
@@ -11,35 +12,99 @@ import Contact from './sections/Contact';
 import Avatar from './Avatar';
 import IntroPage from './IntroPage';
 
-// Hook personnalisé pour la responsivité
+// Hook personnalisé pour la responsivité avancée
 const useResponsiveAvatar = () => {
   const [screenSize, setScreenSize] = useState('desktop');
+  const [deviceType, setDeviceType] = useState('desktop');
   
   useEffect(() => {
     const updateScreenSize = () => {
       const width = window.innerWidth;
+      // const height = window.innerHeight; // Commenté car non utilisé actuellement
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const isTablet = width >= 768 && width <= 1024;
+      
+      // Détection du type d'appareil
+      if (isMobile && width < 768) {
+        setDeviceType('mobile');
+      } else if (isTablet || (width >= 768 && width <= 1024)) {
+        setDeviceType('tablet');
+      } else {
+        setDeviceType('desktop');
+      }
+      
+      // Classification par taille d'écran
       if (width >= 1400) setScreenSize('xl');
-      else if (width >= 992) setScreenSize('desktop');
+      else if (width >= 1200) setScreenSize('desktop');
+      else if (width >= 992) setScreenSize('laptop');
       else if (width >= 768) setScreenSize('tablet');
-      else if (width >= 576) setScreenSize('mobile');
-      else setScreenSize('xs');
+      else if (width >= 576) setScreenSize('mobile-lg');
+      else setScreenSize('mobile-sm');
     };
     
     updateScreenSize();
     window.addEventListener('resize', updateScreenSize);
-    return () => window.removeEventListener('resize', updateScreenSize);
+    window.addEventListener('orientationchange', updateScreenSize);
+    
+    return () => {
+      window.removeEventListener('resize', updateScreenSize);
+      window.removeEventListener('orientationchange', updateScreenSize);
+    };
   }, []);
   
-  // Configuration responsive pour l'avatar
+  // Configuration responsive optimisée pour l'avatar
   const avatarConfig = {
-    xl: { fov: 45, scale: 1.6, position: [0, -1.2, 0] },
-    desktop: { fov: 45, scale: 1.5, position: [0, -1.2, 0] },
-    tablet: { fov: 50, scale: 1.4, position: [0, -1.1, 0] },
-    mobile: { fov: 55, scale: 1.3, position: [0, -1.0, 0] },
-    xs: { fov: 60, scale: 1.2, position: [0, -0.9, 0] }
+    xl: { 
+      fov: 45, 
+      scale: 1.8, 
+      position: [0, -1.3, 0],
+      quality: 'high',
+      enableShadows: true
+    },
+    desktop: { 
+      fov: 45, 
+      scale: 1.6, 
+      position: [0, -1.2, 0],
+      quality: 'high',
+      enableShadows: true
+    },
+    laptop: { 
+      fov: 48, 
+      scale: 1.5, 
+      position: [0, -1.1, 0],
+      quality: 'medium',
+      enableShadows: true
+    },
+    tablet: { 
+      fov: 50, 
+      scale: 1.4, 
+      position: [0, -1.0, 0],
+      quality: 'medium',
+      enableShadows: false
+    },
+    'mobile-lg': { 
+      fov: 55, 
+      scale: 1.3, 
+      position: [0, -0.9, 0],
+      quality: 'low',
+      enableShadows: false
+    },
+    'mobile-sm': { 
+      fov: 60, 
+      scale: 1.2, 
+      position: [0, -0.8, 0],
+      quality: 'low',
+      enableShadows: false
+    }
   };
   
-  return avatarConfig[screenSize];
+  return { 
+    config: avatarConfig[screenSize], 
+    screenSize, 
+    deviceType,
+    isMobile: deviceType === 'mobile',
+    isTablet: deviceType === 'tablet'
+  };
 };
 
 function Portfolio() {
@@ -48,8 +113,7 @@ function Portfolio() {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [nextSection, setNextSection] = useState('');
   
-  // Configuration responsive pour l'avatar
-  const avatarConfig = useResponsiveAvatar();
+  const { config: avatarConfig, isMobile } = useResponsiveAvatar();
 
   const handleIntroComplete = () => {
     setShowIntro(false);
@@ -133,22 +197,36 @@ function Portfolio() {
           </div>
         </div>
         <div className="nav-avatar">
-          <Canvas camera={{ position: [0, 0, 5], fov: avatarConfig.fov }}>
-            {/* Éclairage optimisé pour mon avatar 3D */}
-            <ambientLight intensity={1.8} />
+          <Canvas 
+            camera={{ position: [0, 0, 5], fov: avatarConfig.fov }}
+            gl={{ 
+              antialias: !isMobile, 
+              alpha: true,
+              powerPreference: isMobile ? "low-power" : "high-performance"
+            }}
+            shadows={avatarConfig.enableShadows}
+            dpr={isMobile ? 1 : Math.min(window.devicePixelRatio, 2)}
+          >
+            {/* Éclairage optimisé selon la qualité */}
+            <ambientLight intensity={isMobile ? 1.5 : 1.8} />
             <directionalLight 
               position={[0, 5, 8]} 
-              intensity={3.5} 
+              intensity={isMobile ? 2.5 : 3.5} 
               color="#ffffff"
+              castShadow={avatarConfig.enableShadows}
             />
-            <pointLight position={[4, 2, 6]} intensity={2} color="#f8f8f8" />
-            <pointLight position={[-4, 2, 6]} intensity={2} color="#f8f8f8" />
-            <pointLight position={[0, -3, 4]} intensity={1.5} color="#f0f0f0" />
-            <directionalLight 
-              position={[0, 0, -6]} 
-              intensity={1.2} 
-              color="#64b5f6"
-            />
+            {!isMobile && (
+              <>
+                <pointLight position={[4, 2, 6]} intensity={2} color="#f8f8f8" />
+                <pointLight position={[-4, 2, 6]} intensity={2} color="#f8f8f8" />
+                <pointLight position={[0, -3, 4]} intensity={1.5} color="#f0f0f0" />
+                <directionalLight 
+                  position={[0, 0, -6]} 
+                  intensity={1.2} 
+                  color="#64b5f6"
+                />
+              </>
+            )}
             <Avatar 
               scale={avatarConfig.scale} 
               position={avatarConfig.position} 
@@ -156,10 +234,12 @@ function Portfolio() {
             <OrbitControls 
               enableZoom={false} 
               enablePan={false} 
-              autoRotate 
-              autoRotateSpeed={0.2}
+              autoRotate={!isMobile} 
+              autoRotateSpeed={isMobile ? 0.1 : 0.2}
               enableDamping={true}
-              dampingFactor={0.05}
+              dampingFactor={isMobile ? 0.1 : 0.05}
+              maxPolarAngle={Math.PI / 1.8}
+              minPolarAngle={Math.PI / 3}
             />
           </Canvas>
         </div>
