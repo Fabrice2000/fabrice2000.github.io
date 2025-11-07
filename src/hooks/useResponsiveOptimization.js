@@ -1,267 +1,329 @@
-import { useState, useEffect } from 'react';
+/**
+ * Hook personnalisé pour l'optimisation responsive du portfolio 3D
+ * Gère les breakpoints, les performances et les interactions tactiles
+ */
 
-// Hook pour détecter les performances et ajuster la qualité automatiquement
-export const usePerformanceOptimization = () => {
-  const [performanceLevel, setPerformanceLevel] = useState('medium');
-  const [batteryLevel, setBatteryLevel] = useState(1);
-  const [isLowPowerMode, setIsLowPowerMode] = useState(false);
+import { useState, useEffect, useCallback } from 'react';
 
-  useEffect(() => {
-    const detectPerformance = async () => {
-      // Détection des performances basée sur plusieurs facteurs
-      let score = 0;
-      
-      // 1. Nombre de cœurs CPU
-      if (navigator.hardwareConcurrency) {
-        if (navigator.hardwareConcurrency >= 8) score += 3;
-        else if (navigator.hardwareConcurrency >= 4) score += 2;
-        else score += 1;
-      }
-      
-      // 2. Mémoire disponible
-      if (navigator.deviceMemory) {
-        if (navigator.deviceMemory >= 8) score += 3;
-        else if (navigator.deviceMemory >= 4) score += 2;
-        else score += 1;
-      }
-      
-      // 3. Type de connexion
-      if (navigator.connection) {
-        const connection = navigator.connection;
-        if (connection.effectiveType === '4g') score += 2;
-        else if (connection.effectiveType === '3g') score += 1;
-        
-        // Mode économie de données
-        if (connection.saveData) {
-          score -= 2;
-          setIsLowPowerMode(true);
-        }
-      }
-      
-      // 4. Type d'appareil
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      if (isMobile) score -= 1;
-      
-      // 5. Batterie
-      if ('getBattery' in navigator) {
-        try {
-          const battery = await navigator.getBattery();
-          setBatteryLevel(battery.level);
-          
-          if (battery.level < 0.2) {
-            score -= 2;
-            setIsLowPowerMode(true);
-          } else if (battery.level < 0.5) {
-            score -= 1;
-          }
-          
-          if (!battery.charging && battery.level < 0.3) {
-            setIsLowPowerMode(true);
-          }
-        } catch (error) {
-          console.log('Battery API not available');
-        }
-      }
-      
-      // 6. Taille de l'écran
-      const screenSize = window.innerWidth * window.innerHeight;
-      if (screenSize > 2000000) score += 1; // Grand écran
-      else if (screenSize < 500000) score -= 1; // Petit écran
-      
-      // Détermination du niveau de performance
-      if (score >= 8) setPerformanceLevel('high');
-      else if (score >= 5) setPerformanceLevel('medium');
-      else setPerformanceLevel('low');
-    };
+// Breakpoints responsive
+const BREAKPOINTS = {
+  xs: 0,
+  sm: 576,
+  md: 768,
+  lg: 992,
+  xl: 1200,
+  xxl: 1400
+};
 
-    detectPerformance();
-    
-    // Réévaluation périodique
-    const interval = setInterval(detectPerformance, 30000); // Toutes les 30 secondes
-    
-    return () => clearInterval(interval);
+// Configuration responsive pour les différents composants
+const RESPONSIVE_CONFIG = {
+  avatar: {
+    xs: { fov: 65, scale: 1.1, position: [0, -0.8, 0], autoRotateSpeed: 0.1 },
+    sm: { fov: 60, scale: 1.2, position: [0, -0.9, 0], autoRotateSpeed: 0.15 },
+    md: { fov: 55, scale: 1.3, position: [0, -1.0, 0], autoRotateSpeed: 0.2 },
+    lg: { fov: 50, scale: 1.4, position: [0, -1.1, 0], autoRotateSpeed: 0.25 },
+    xl: { fov: 45, scale: 1.5, position: [0, -1.2, 0], autoRotateSpeed: 0.3 },
+    xxl: { fov: 40, scale: 1.6, position: [0, -1.3, 0], autoRotateSpeed: 0.3 }
+  },
+  navigation: {
+    xs: { avatarSize: 40, brandFontSize: '12px', linkPadding: '4px 8px' },
+    sm: { avatarSize: 50, brandFontSize: '14px', linkPadding: '6px 12px' },
+    md: { avatarSize: 60, brandFontSize: '16px', linkPadding: '8px 16px' },
+    lg: { avatarSize: 70, brandFontSize: '18px', linkPadding: '10px 20px' },
+    xl: { avatarSize: 80, brandFontSize: '20px', linkPadding: '12px 24px' },
+    xxl: { avatarSize: 90, brandFontSize: '24px', linkPadding: '14px 28px' }
+  },
+  content: {
+    xs: { containerPadding: '8px', sectionPadding: '16px 8px' },
+    sm: { containerPadding: '16px', sectionPadding: '32px 16px' },
+    md: { containerPadding: '24px', sectionPadding: '48px 24px' },
+    lg: { containerPadding: '32px', sectionPadding: '64px 32px' },
+    xl: { containerPadding: '40px', sectionPadding: '80px 40px' },
+    xxl: { containerPadding: '48px', sectionPadding: '96px 48px' }
+  }
+};
+
+/**
+ * Hook principal pour la responsivité
+ */
+export const useResponsiveOptimization = () => {
+  const [screenSize, setScreenSize] = useState('lg');
+  const [windowDimensions, setWindowDimensions] = useState({
+    width: typeof window !== 'undefined' ? window.innerWidth : 1200,
+    height: typeof window !== 'undefined' ? window.innerHeight : 800
+  });
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+  const [isTouch, setIsTouch] = useState(false);
+  const [orientation, setOrientation] = useState('portrait');
+
+  // Fonction pour déterminer la taille d'écran
+  const getScreenSize = useCallback((width) => {
+    if (width >= BREAKPOINTS.xxl) return 'xxl';
+    if (width >= BREAKPOINTS.xl) return 'xl';
+    if (width >= BREAKPOINTS.lg) return 'lg';
+    if (width >= BREAKPOINTS.md) return 'md';
+    if (width >= BREAKPOINTS.sm) return 'sm';
+    return 'xs';
   }, []);
 
-  // Configuration adaptative basée sur les performances
-  const getOptimizedSettings = () => {
-    const baseSettings = {
-      high: {
-        antialias: true,
-        shadowMapEnabled: true,
-        shadowMapType: 'PCFSoftShadowMap',
-        toneMapping: 'ACESFilmicToneMapping',
-        pixelRatio: Math.min(window.devicePixelRatio, 2),
-        maxLights: 8,
-        animationQuality: 'high',
-        particlesEnabled: true,
-        reflectionsEnabled: true
-      },
-      medium: {
-        antialias: true,
-        shadowMapEnabled: false,
-        shadowMapType: 'BasicShadowMap',
-        toneMapping: 'LinearToneMapping',
-        pixelRatio: Math.min(window.devicePixelRatio, 1.5),
-        maxLights: 5,
-        animationQuality: 'medium',
-        particlesEnabled: false,
-        reflectionsEnabled: false
-      },
-      low: {
-        antialias: false,
-        shadowMapEnabled: false,
-        shadowMapType: null,
-        toneMapping: 'NoToneMapping',
-        pixelRatio: 1,
-        maxLights: 3,
-        animationQuality: 'low',
-        particlesEnabled: false,
-        reflectionsEnabled: false
-      }
-    };
+  // Fonction pour détecter le type d'appareil
+  const detectDeviceType = useCallback((width, height) => {
+    const isMobileDevice = width < BREAKPOINTS.md;
+    const isTabletDevice = width >= BREAKPOINTS.md && width < BREAKPOINTS.lg;
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const deviceOrientation = width > height ? 'landscape' : 'portrait';
 
-    let settings = baseSettings[performanceLevel];
+    setIsMobile(isMobileDevice);
+    setIsTablet(isTabletDevice);
+    setIsTouch(isTouchDevice);
+    setOrientation(deviceOrientation);
+  }, []);
+
+  // Gestionnaire de redimensionnement avec debounce
+  const handleResize = useCallback(() => {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
     
-    // Ajustements supplémentaires pour mode économie
-    if (isLowPowerMode) {
-      settings = {
-        ...settings,
-        antialias: false,
-        shadowMapEnabled: false,
-        pixelRatio: 1,
-        maxLights: 2,
-        animationQuality: 'low',
-        particlesEnabled: false,
-        reflectionsEnabled: false
+    setWindowDimensions({ width, height });
+    setScreenSize(getScreenSize(width));
+    detectDeviceType(width, height);
+  }, [getScreenSize, detectDeviceType]);
+
+  // Debounce pour optimiser les performances
+  const debounce = (func, wait) => {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
       };
-    }
-    
-    return settings;
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
   };
+
+  // Effect pour l'initialisation et l'écoute des événements
+  useEffect(() => {
+    const debouncedHandleResize = debounce(handleResize, 150);
+    
+    // Initialisation
+    handleResize();
+
+    // Écoute des événements
+    window.addEventListener('resize', debouncedHandleResize);
+    window.addEventListener('orientationchange', debouncedHandleResize);
+
+    // Nettoyage
+    return () => {
+      window.removeEventListener('resize', debouncedHandleResize);
+      window.removeEventListener('orientationchange', debouncedHandleResize);
+    };
+  }, [handleResize]);
+
+  // Configurations responsives
+  const avatarConfig = RESPONSIVE_CONFIG.avatar[screenSize];
+  const navigationConfig = RESPONSIVE_CONFIG.navigation[screenSize];
+  const contentConfig = RESPONSIVE_CONFIG.content[screenSize];
 
   return {
-    performanceLevel,
-    batteryLevel,
-    isLowPowerMode,
-    settings: getOptimizedSettings()
+    // État du viewport
+    screenSize,
+    windowDimensions,
+    isMobile,
+    isTablet,
+    isTouch,
+    orientation,
+    
+    // Configurations
+    avatarConfig,
+    navigationConfig,
+    contentConfig,
+    
+    // Utilitaires
+    breakpoints: BREAKPOINTS,
+    isScreenSize: (size) => screenSize === size,
+    isMinWidth: (breakpoint) => windowDimensions.width >= BREAKPOINTS[breakpoint],
+    isMaxWidth: (breakpoint) => windowDimensions.width < BREAKPOINTS[breakpoint]
   };
 };
 
-// Hook pour la responsivité avancée
-export const useAdvancedResponsive = () => {
-  const [deviceInfo, setDeviceInfo] = useState({
-    type: 'desktop',
-    screenSize: 'large',
-    orientation: 'landscape',
+/**
+ * Hook pour optimiser les performances sur mobile
+ */
+export const usePerformanceOptimization = () => {
+  const { isMobile, isTouch } = useResponsiveOptimization();
+  const [shouldReduceAnimations, setShouldReduceAnimations] = useState(false);
+  const [shouldOptimizeRendering, setShouldOptimizeRendering] = useState(false);
+
+  useEffect(() => {
+    // Détection des préférences de mouvement réduit
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    
+    // Optimisations basées sur l'appareil
+    setShouldReduceAnimations(isMobile || prefersReducedMotion);
+    setShouldOptimizeRendering(isMobile);
+  }, [isMobile]);
+
+  return {
+    shouldReduceAnimations,
+    shouldOptimizeRendering,
+    optimizedProps: {
+      // Props optimisées pour Three.js
+      pixelRatio: isMobile ? Math.min(window.devicePixelRatio, 2) : window.devicePixelRatio,
+      antialias: !isMobile,
+      shadowMap: !isMobile,
+      powerPreference: isMobile ? 'low-power' : 'high-performance'
+    }
+  };
+};
+
+/**
+ * Hook pour la gestion des interactions tactiles
+ */
+export const useTouchOptimization = () => {
+  const { isTouch, isMobile } = useResponsiveOptimization();
+  const [touchSupport, setTouchSupport] = useState({
     hasTouch: false,
     hasHover: true,
-    hasPointer: true
+    hasPinchZoom: false
   });
 
   useEffect(() => {
-    const updateDeviceInfo = () => {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-      const hasHover = window.matchMedia('(hover: hover)').matches;
-      const hasPointer = window.matchMedia('(pointer: fine)').matches;
-      
-      // Type d'appareil
-      let type;
-      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        if (width < 768) type = 'mobile';
-        else type = 'tablet';
-      } else {
-        type = 'desktop';
-      }
-      
-      // Taille d'écran
-      let screenSize;
-      if (width < 576) screenSize = 'xs';
-      else if (width < 768) screenSize = 'sm';
-      else if (width < 992) screenSize = 'md';
-      else if (width < 1200) screenSize = 'lg';
-      else if (width < 1400) screenSize = 'xl';
-      else screenSize = 'xxl';
-      
-      // Orientation
-      const orientation = width > height ? 'landscape' : 'portrait';
-      
-      setDeviceInfo({
-        type,
-        screenSize,
-        orientation,
-        hasTouch,
-        hasHover,
-        hasPointer,
-        width,
-        height,
-        ratio: width / height
-      });
-    };
+    const hasTouch = isTouch;
+    const hasHover = !isMobile && window.matchMedia('(hover: hover)').matches;
+    const hasPinchZoom = hasTouch && 'ontouchstart' in window;
 
-    updateDeviceInfo();
-    
-    window.addEventListener('resize', updateDeviceInfo);
-    window.addEventListener('orientationchange', updateDeviceInfo);
-    
-    return () => {
-      window.removeEventListener('resize', updateDeviceInfo);
-      window.removeEventListener('orientationchange', updateDeviceInfo);
-    };
-  }, []);
-
-  return deviceInfo;
-};
-
-// Hook pour les paramètres d'accessibilité
-export const useAccessibilitySettings = () => {
-  const [accessibilitySettings, setAccessibilitySettings] = useState({
-    reducedMotion: false,
-    highContrast: false,
-    largeText: false,
-    focusVisible: true
-  });
-
-  useEffect(() => {
-    // Détection des préférences d'accessibilité
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const highContrast = window.matchMedia('(prefers-contrast: high)').matches;
-    const largeText = window.matchMedia('(prefers-reduced-data: reduce)').matches;
-    
-    setAccessibilitySettings({
-      reducedMotion,
-      highContrast,
-      largeText,
-      focusVisible: true
+    setTouchSupport({
+      hasTouch,
+      hasHover,
+      hasPinchZoom
     });
-    
-    // Écoute des changements
-    const motionMediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const contrastMediaQuery = window.matchMedia('(prefers-contrast: high)');
-    
-    const handleMotionChange = (e) => {
-      setAccessibilitySettings(prev => ({ ...prev, reducedMotion: e.matches }));
-    };
-    
-    const handleContrastChange = (e) => {
-      setAccessibilitySettings(prev => ({ ...prev, highContrast: e.matches }));
-    };
-    
-    motionMediaQuery.addListener(handleMotionChange);
-    contrastMediaQuery.addListener(handleContrastChange);
-    
-    return () => {
-      motionMediaQuery.removeListener(handleMotionChange);
-      contrastMediaQuery.removeListener(handleContrastChange);
-    };
-  }, []);
 
-  return accessibilitySettings;
+    // Désactiver le zoom pinch sur mobile si nécessaire
+    if (isMobile) {
+      const viewport = document.querySelector('meta[name="viewport"]');
+      if (viewport) {
+        viewport.setAttribute('content', 
+          'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
+        );
+      }
+    }
+  }, [isTouch, isMobile]);
+
+  return touchSupport;
 };
 
+/**
+ * Hook pour l'optimisation des images responsives
+ */
+export const useImageOptimization = () => {
+  const { screenSize, windowDimensions } = useResponsiveOptimization();
+  
+  const getOptimizedImageSize = useCallback((baseWidth) => {
+    const scale = {
+      xs: 0.5,
+      sm: 0.6,
+      md: 0.7,
+      lg: 0.8,
+      xl: 0.9,
+      xxl: 1.0
+    }[screenSize] || 1.0;
+
+    return Math.round(baseWidth * scale);
+  }, [screenSize]);
+
+  const getImageSrcSet = useCallback((basePath, sizes = [400, 800, 1200, 1600]) => {
+    return sizes.map(size => `${basePath}?w=${size} ${size}w`).join(', ');
+  }, []);
+
+  return {
+    getOptimizedImageSize,
+    getImageSrcSet,
+    shouldLazyLoad: windowDimensions.width < BREAKPOINTS.lg
+  };
+};
+
+/**
+ * Hook pour la gestion responsive de la navigation
+ */
+export const useResponsiveNavigation = () => {
+  const { screenSize, isMobile } = useResponsiveOptimization();
+  const [isNavOpen, setIsNavOpen] = useState(false);
+  const [navVariant, setNavVariant] = useState('desktop');
+
+  useEffect(() => {
+    if (isMobile) {
+      setNavVariant('mobile');
+    } else {
+      setNavVariant('desktop');
+      setIsNavOpen(false); // Fermer le menu mobile sur desktop
+    }
+  }, [isMobile]);
+
+  const toggleNav = useCallback(() => {
+    setIsNavOpen(prev => !prev);
+  }, []);
+
+  const closeNav = useCallback(() => {
+    setIsNavOpen(false);
+  }, []);
+
+  return {
+    isNavOpen,
+    navVariant,
+    toggleNav,
+    closeNav,
+    shouldShowMobileMenu: isMobile && isNavOpen
+  };
+};
+
+/**
+ * Hook pour la validation de compatibilité WebGL
+ */
+export const useWebGLCompatibility = () => {
+  const [webGLSupport, setWebGLSupport] = useState({
+    isSupported: true,
+    version: null,
+    extensions: []
+  });
+
+  useEffect(() => {
+    const canvas = document.createElement('canvas');
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    
+    if (gl) {
+      const version = gl.getParameter(gl.VERSION);
+      const extensions = gl.getSupportedExtensions() || [];
+      
+      setWebGLSupport({
+        isSupported: true,
+        version,
+        extensions
+      });
+    } else {
+      setWebGLSupport({
+        isSupported: false,
+        version: null,
+        extensions: []
+      });
+    }
+
+    // Nettoyage
+    canvas.remove();
+  }, []);
+
+  return webGLSupport;
+};
+
+// Export du hook principal avec des utilitaires
 export default {
+  useResponsiveOptimization,
   usePerformanceOptimization,
-  useAdvancedResponsive,
-  useAccessibilitySettings
+  useTouchOptimization,
+  useImageOptimization,
+  useResponsiveNavigation,
+  useWebGLCompatibility,
+  BREAKPOINTS,
+  RESPONSIVE_CONFIG
 };

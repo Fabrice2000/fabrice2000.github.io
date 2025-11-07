@@ -12,7 +12,7 @@ const modelPath = process.env.NODE_ENV === 'development'
 useGLTF.preload(modelPath);
 
 // Composant Avatar qui marche pour l'intro
-const WalkingAvatar = ({ scale = 2, position = [0, -2, 0] }) => {
+const WalkingAvatar = ({ scale = 2, position = [0, -1.2, 0] }) => {
   const gltf = useGLTF(modelPath);
   const { actions } = useAnimations(gltf.animations, gltf.scene);
   
@@ -110,7 +110,7 @@ const IntroPage = ({ onIntroComplete }) => {
       <div className="intro-avatar-container">
         <Suspense fallback={<div className="loading-avatar">Chargement de l'avatar...</div>}>
           <Canvas 
-            camera={{ position: [0, 0, 8], fov: 50 }}
+            camera={{ position: [0, 1, 8], fov: 50 }}
             style={{ width: '100%', height: '60vh' }}
           >
             <ambientLight intensity={1.5} />
@@ -121,7 +121,7 @@ const IntroPage = ({ onIntroComplete }) => {
             />
             <pointLight position={[-5, 5, 5]} intensity={1.5} color="#64b5f6" />
             
-            <WalkingAvatar scale={2.5} position={[0, -2.5, 0]} />
+            <WalkingAvatar scale={2.5} position={[0, -1.2, 0]} />
           </Canvas>
         </Suspense>
       </div>
@@ -155,15 +155,15 @@ const IntroPage = ({ onIntroComplete }) => {
         <div className="intro-features">
           <div className="feature-item">
             <span className="feature-icon">🚀</span>
+            <span className="feature-text">Innovation</span>
+          </div>
+          <div className="feature-item">
+            <span className="feature-icon">⚡</span>
             <span className="feature-text">Performance</span>
           </div>
           <div className="feature-item">
             <span className="feature-icon">🎨</span>
             <span className="feature-text">Design</span>
-          </div>
-          <div className="feature-item">
-            <span className="feature-icon">⚡</span>
-            <span className="feature-text">Innovation</span>
           </div>
         </div>
       </div>
@@ -171,7 +171,7 @@ const IntroPage = ({ onIntroComplete }) => {
       {/* Indication pour passer l'intro */}
       {progress === 100 && (
         <div className="skip-hint">
-          <p>Préparation du portfolio...</p>
+          <p>Ouverture de mon univers...</p>
           <div className="loading-dots">
             <span></span>
             <span></span>

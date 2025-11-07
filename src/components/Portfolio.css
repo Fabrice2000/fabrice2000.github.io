@@ -317,6 +317,37 @@ body {
   opacity: 0.9;
 }
 
+/* Styles pour les boutons CTA qui ressemblent aux stats */
+.cta-stat {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.cta-stat:hover {
+  background: rgba(138, 132, 226, 0.2) !important;
+  transform: translateY(-8px) scale(1.08);
+  box-shadow: 0 15px 35px rgba(138, 132, 226, 0.4);
+  border: 2px solid rgba(138, 132, 226, 0.5);
+}
+
+.cta-stat .stat-number {
+  font-size: 2.5rem;
+  color: #8A84E2;
+  margin-bottom: 0.5rem;
+}
+
+.cta-stat .stat-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  opacity: 1;
+}
+
+.cta-stat:active {
+  transform: translateY(-5px) scale(1.05);
+}
+
 .hero-role {
   font-size: 1.5rem;
   margin: 1rem 0;
@@ -2351,6 +2382,15 @@ body {
   
   .stat-number {
     font-size: 1.5rem;
+  }
+  
+  /* Responsive styles pour les boutons CTA */
+  .cta-stat .stat-number {
+    font-size: 2rem;
+  }
+  
+  .cta-stat .stat-label {
+    font-size: 0.9rem;
   }
   
   .about-section,

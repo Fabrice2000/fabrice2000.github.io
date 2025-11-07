@@ -1,4 +1,5 @@
 import React from 'react';
+import './Projets.css';
 
 function Projets({ onNavigate }) {
   return (
