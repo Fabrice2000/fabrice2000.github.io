@@ -275,11 +275,34 @@
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
   transition: all var(--transition-normal);
   flex-shrink: 0;
+  /* 🔧 Protection contre les problèmes de scroll */
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+  /* Isolation du contexte de rendu */
+  isolation: isolate;
 }
 
 .avatar-container:hover {
   transform: scale(1.02);
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* 🎮 Protection Canvas Three.js pendant scroll */
+.avatar-container canvas {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  /* Éviter la disparition pendant scroll */
+  will-change: transform;
+  /* Position fixe dans le container */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 /* ===========================================
@@ -332,6 +355,13 @@
   justify-content: center;
   gap: 4px;
   text-align: center;
+  /* 🔧 Protection contre les problèmes de clic */
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
+  /* Éviter les conflits de rendu */
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .animation-btn:hover {

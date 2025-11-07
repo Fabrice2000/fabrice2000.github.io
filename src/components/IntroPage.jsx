@@ -53,17 +53,17 @@ const IntroPage = ({ onIntroComplete }) => {
 
   useEffect(() => {
 
-    // Progression du chargement
+    // Progression du chargement - RAPIDE (2.6s max)
     const progressInterval = setInterval(() => {
       setProgress(prev => {
         if (prev >= 100) {
           clearInterval(progressInterval);
-          setTimeout(onIntroComplete, 500);
+          setTimeout(onIntroComplete, 300);
           return 100;
         }
-        return prev + 5;
+        return prev + 8; // Augmenté de 5 à 8 pour accélérer
       });
-    }, 200);
+    }, 130); // Réduit de 200ms à 130ms
 
     return () => {
       clearInterval(progressInterval);
@@ -93,8 +93,8 @@ const IntroPage = ({ onIntroComplete }) => {
       <div className="intro-avatar-container">
         <Suspense fallback={<div className="loading-avatar"></div>}>
           <Canvas 
-            camera={{ position: [0, 0, 6], fov: 75 }}
-            style={{ width: '100%', height: '60vh' }}
+            camera={{ position: [0, 4, 10], fov: 85 }}
+            style={{ width: '100%', height: '50vh' }}
           >
             <ambientLight intensity={1.5} />
             <directionalLight 
@@ -104,11 +104,10 @@ const IntroPage = ({ onIntroComplete }) => {
             />
             <pointLight position={[-5, 5, 5]} intensity={1.5} color="#64b5f6" />
             
-            <OpeningAvatar scale={2.5} position={[0, -0.5, -2]} />
+            <OpeningAvatar scale={3} position={[0, -0.2, -1.5]} />
           </Canvas>
         </Suspense>
       </div>
-
       {/* Texte de bienvenue avec animations complètes */}
       <div className="intro-content">
         <h1 className="intro-title">

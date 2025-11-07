@@ -4,6 +4,7 @@ import { OrbitControls } from '@react-three/drei';
 import './Portfolio.css';
 import './ResponsiveFinal.css';
 import './IntroPage.css';
+import './FastAnimations.css'; // ⚡ Optimisations performances
 
 // Mes différentes sections du portfolio
 import Accueil from './sections/Accueil';
@@ -11,6 +12,9 @@ import Projets from './sections/Projets';
 import Contact from './sections/Contact';
 import Avatar from './Avatar';
 import IntroPage from './IntroPage';
+
+// Hooks personnalisés pour la responsivité et optimisations
+import { useScrollOptimization } from '../hooks/useResponsiveOptimization';
 
 // Hook personnalisé pour la responsivité
 const useResponsiveAvatar = () => {
@@ -51,6 +55,41 @@ function Portfolio() {
   
   // Configuration responsive pour l'avatar
   const avatarConfig = useResponsiveAvatar();
+  
+  // ⚡ Hook d'optimisation scroll ultra-rapide
+  const { isScrolling, scrollDirection, scrollToSection } = useScrollOptimization();
+
+  // ⚡ Optimisation scroll performance
+  useEffect(() => {
+    // Optimisation du scroll pour de meilleures performances
+    const optimizeScroll = () => {
+      // Activer le smooth scrolling
+      document.documentElement.style.scrollBehavior = 'smooth';
+      
+      // Optimiser les events de scroll
+      let ticking = false;
+      const updateScroll = () => {
+        ticking = false;
+      };
+      
+      const requestTick = () => {
+        if (!ticking) {
+          requestAnimationFrame(updateScroll);
+          ticking = true;
+        }
+      };
+      
+      // Throttle scroll events pour performance
+      window.addEventListener('scroll', requestTick, { passive: true });
+      
+      return () => {
+        window.removeEventListener('scroll', requestTick);
+      };
+    };
+    
+    const cleanup = optimizeScroll();
+    return cleanup;
+  }, []);
 
   const handleIntroComplete = () => {
     setShowIntro(false);
@@ -59,35 +98,31 @@ function Portfolio() {
   const navigateToSection = (section) => {
     if (section === activeSection || isTransitioning) return;
     
-    // Démarrer la transition
+    // Démarrer la transition plus rapide
     setIsTransitioning(true);
     setNextSection(section);
     
-    // Changer la section après un délai pour l'animation
+    // Changer la section après un délai réduit pour l'animation
     setTimeout(() => {
       setActiveSection(section);
       setNextSection('');
       setTimeout(() => {
         setIsTransitioning(false);
-      }, 100);
-    }, 300);
+      }, 50); // Réduit de 100ms à 50ms
+    }, 150); // Réduit de 300ms à 150ms
   };
 
   return (
     <>
       {/* Page d'introduction avec avatar qui marche */}
       {showIntro && (
-        <IntroPage 
-          key="intro-page" 
-          onIntroComplete={handleIntroComplete} 
-        />
+        <IntroPage onIntroComplete={handleIntroComplete} />
       )}
       
       {/* Portfolio principal */}
-      {!showIntro && (
-        <div className={`portfolio-container visible`} key="main-portfolio">
-        {/* Barre de progression pour indiquer la section active */}
-        <div className="progress-bar">
+      <div className={`portfolio-container ${showIntro ? 'hidden' : 'visible'}`}>
+      {/* Barre de progression pour indiquer la section active */}
+      <div className="progress-bar">
         <div 
           className="progress-fill" 
           style={{
@@ -232,8 +267,7 @@ function Portfolio() {
           </div>
         </div>
       </footer>
-        </div>
-      )}
+      </div>
     </>
   );
 }

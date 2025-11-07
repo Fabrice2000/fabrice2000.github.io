@@ -1,9 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useGLTF, useAnimations } from '@react-three/drei';
 
 // Mon avatar 3D personnalisé avec animations interactives
 function Avatar({ scale = 1, position = [0, 0, 0], animationType = 'marche', onAnimationChange }) {
-  const [isTransitioning, setIsTransitioning] = useState(false);
   const groupRef = useRef();
   
   // Modèles disponibles avec leurs chemins
@@ -26,70 +25,68 @@ function Avatar({ scale = 1, position = [0, 0, 0], animationType = 'marche', onA
   const { actions } = useAnimations(animations, scene);
 
   useEffect(() => {
-    // Marquer le début de la transition
-    setIsTransitioning(true);
-
-    // Petite pause pour éviter la superposition
+    // Délai réduit pour une transition plus fluide
     const transitionDelay = setTimeout(() => {
-      // Arrêter toutes les animations précédentes
+      // Arrêter toutes les animations précédentes rapidement
       Object.values(actions).forEach(action => {
-        if (action) {
-          action.stop().reset();
+        if (action && action.isRunning()) {
+          action.fadeOut(0.1);
         }
       });
 
-      // Configuration des animations selon le type
-      console.log(`🎭 Chargement animation: ${animationType}`, Object.keys(actions));
-      
-      Object.keys(actions).forEach(actionName => {
-        const action = actions[actionName];
-        if (action) {
-          // Configuration selon le type d'animation
-          if (animationType === 'bonjour') {
-            // Animation de salut - jouer une fois puis revenir à la marche
-            action.reset()
-              .setLoop(2200, 1) // Jouer une fois
-              .fadeIn(0.3)
-              .play();
-            action.timeScale = 1.0;
-            
-            // Retour automatique à la marche après l'animation de bonjour
-            action.getMixer().addEventListener('finished', () => {
-              if (onAnimationChange) {
-                setTimeout(() => onAnimationChange('marche'), 1000);
-              }
-            });
-          } else if (animationType === 'marche') {
-            // Animation de marche en boucle
-            action.reset()
-              .setLoop(2201, 1) // Boucle infinie
-              .fadeIn(0.3)
-              .play();
-            action.timeScale = 1.2;
-          } else {
-            // Animation rumba, hiphop ou autres - en boucle
-            action.reset()
-              .setLoop(2201, 1)
-              .fadeIn(0.3)
-              .play();
-            action.timeScale = 1.0;
+      // Délai pour permettre le fade-out
+      setTimeout(() => {
+        // Configuration des animations selon le type
+        console.log(`🎭 Chargement animation: ${animationType}`, Object.keys(actions));
+        
+        Object.keys(actions).forEach(actionName => {
+          const action = actions[actionName];
+          if (action) {
+            // Configuration selon le type d'animation
+            if (animationType === 'bonjour') {
+              // Animation de salut - jouer une fois puis revenir à la marche
+              action.reset()
+                .setLoop(2200, 1) // Jouer une fois
+                .fadeIn(0.15) // Fade-in stable
+                .play();
+              action.timeScale = 1.2; // Plus rapide
+              
+              // Retour automatique à la marche après l'animation de bonjour
+              action.getMixer().addEventListener('finished', () => {
+                if (onAnimationChange) {
+                  setTimeout(() => onAnimationChange('marche'), 500); // Réduit de 1000ms à 500ms
+                }
+              });
+            } else if (animationType === 'marche') {
+              // Animation de marche en boucle
+              action.reset()
+                .setLoop(2201, 1) // Boucle infinie
+                .fadeIn(0.15) // Fade-in stable
+                .play();
+              action.timeScale = 1.4; // Plus rapide
+            } else {
+              // Animation rumba, hiphop ou autres - en boucle
+              action.reset()
+                .setLoop(2201, 1)
+                .fadeIn(0.15) // Fade-in stable
+                .play();
+              action.timeScale = 1.2; // Plus rapide
+            }
           }
-        }
-      });
-
-      // Fin de la transition
-      setIsTransitioning(false);
-    }, 200); // Délai de 200ms pour éviter la superposition
+        });
+      }, 120); // Petit délai pour le fade-out
+    }, 50); // Délai initial réduit
 
     return () => clearTimeout(transitionDelay);
   }, [actions, animationType, onAnimationChange]);
 
   return (
-    <group ref={groupRef} visible={!isTransitioning}>
+    <group ref={groupRef}>
       <primitive 
         object={scene} 
         scale={scale} 
         position={position}
+        visible={true}
       />
     </group>
   );

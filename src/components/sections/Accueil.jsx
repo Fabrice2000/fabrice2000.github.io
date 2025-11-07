@@ -4,6 +4,9 @@ import { OrbitControls } from '@react-three/drei';
 import Avatar from '../Avatar';
 import './Accueil.css';
 
+// Liste des animations disponibles pour la rotation automatique
+const availableAnimations = ['marche', 'bonjour', 'rumba', 'hiphop'];
+
 function Accueil({ onNavigate }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [avatarRotation, setAvatarRotation] = useState({ x: 0, y: 0, z: 0 });
@@ -14,18 +17,15 @@ function Accueil({ onNavigate }) {
   const [isAnimating, setIsAnimating] = useState(false);
   const [autoAnimationMode, setAutoAnimationMode] = useState(true);
   
-  // Liste des animations disponibles pour la rotation automatique
-  const availableAnimations = ['marche', 'bonjour', 'rumba', 'hiphop'];
-  
   useEffect(() => {
-    // Petite animation d'entrée personnalisée
+    // Animation d'entrée plus rapide
     const timer = setTimeout(() => {
       setIsLoaded(true);
-    }, 100);
+    }, 50); // Réduit de 100ms à 50ms
     return () => clearTimeout(timer);
   }, []);
 
-  // Système de changement automatique d'animation
+  // Système de changement automatique d'animation - plus rapide
   useEffect(() => {
     if (!autoAnimationMode || isAnimating) return;
 
@@ -37,10 +37,10 @@ function Accueil({ onNavigate }) {
     const autoChangeTimer = setTimeout(() => {
       const nextAnimation = getRandomAnimation();
       setCurrentAnimation(nextAnimation);
-    }, Math.random() * 5000 + 8000); // Entre 8 et 13 secondes
+    }, Math.random() * 3000 + 5000); // Réduit: entre 5 et 8 secondes (au lieu de 8-13s)
 
     return () => clearTimeout(autoChangeTimer);
-  }, [currentAnimation, autoAnimationMode, isAnimating, availableAnimations]);
+  }, [currentAnimation, autoAnimationMode, isAnimating]); // Supprimé availableAnimations
 
   // Fonctions pour contrôler la rotation 3D de l'avatar principal
   const handleMouseDown = (e) => {
@@ -90,15 +90,15 @@ function Accueil({ onNavigate }) {
     setIsAnimating(true);
     setCurrentAnimation(animationType);
     
-    // Réactiver le mode automatique après 20 secondes d'inactivité
+    // Réactiver le mode automatique après 15 secondes d'inactivité (réduit de 20s)
     setTimeout(() => {
       setAutoAnimationMode(true);
-    }, 20000);
+    }, 15000);
     
-    // Réactiver après un délai pour éviter le spam
+    // Réactiver après un délai plus court pour éviter le spam
     setTimeout(() => {
       setIsAnimating(false);
-    }, 1000);
+    }, 600); // Réduit de 1000ms à 600ms
   };
 
   const handleAvatarAnimationEnd = (nextAnimation) => {
@@ -114,7 +114,7 @@ function Accueil({ onNavigate }) {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDragging]);
+  }, [isDragging, handleMouseMove]); // Ajout de handleMouseMove
 
   return (
     <div className={`accueil-container ${isLoaded ? 'loaded' : ''}`}>
@@ -229,7 +229,11 @@ function Accueil({ onNavigate }) {
               >
               </div>
               
-              <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
+              <Canvas 
+                camera={{ position: [0, 0, 5], fov: 50 }}
+                style={{ pointerEvents: 'auto' }}
+                gl={{ preserveDrawingBuffer: true, antialias: true }}
+              >
                 {/* J'ai travaillé longtemps sur l'éclairage pour que mon avatar soit parfait */}
                 <ambientLight intensity={2.2} />
                 
@@ -263,11 +267,14 @@ function Accueil({ onNavigate }) {
                 <pointLight position={[2, 6, 4]} intensity={1.5} color="#e8f4fd" />
                 <pointLight position={[-2, 6, 4]} intensity={1.5} color="#e8f4fd" />
                 
-                <group rotation={[
-                  (avatarRotation.x * Math.PI) / 180,
-                  (avatarRotation.y * Math.PI) / 180,
-                  (avatarRotation.z * Math.PI) / 180
-                ]}>
+                <group 
+                  rotation={[
+                    (avatarRotation.x * Math.PI) / 180,
+                    (avatarRotation.y * Math.PI) / 180,
+                    (avatarRotation.z * Math.PI) / 180
+                  ]}
+                  scale={[1, 1, 1]}
+                >
                   <Avatar 
                     scale={2} 
                     position={[0, -1.8, 0]} 

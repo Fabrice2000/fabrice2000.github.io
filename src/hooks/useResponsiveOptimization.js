@@ -163,6 +163,14 @@ export const usePerformanceOptimization = () => {
     // Optimisations basées sur l'appareil
     setShouldReduceAnimations(isMobile || prefersReducedMotion);
     setShouldOptimizeRendering(isMobile);
+    
+    // ⚡ Optimisation scroll performance
+    if (isMobile) {
+      // Optimiser les événements de scroll sur mobile
+      document.documentElement.style.scrollBehavior = 'smooth';
+      document.body.style.overscrollBehavior = 'contain';
+      document.body.style.webkitOverflowScrolling = 'touch';
+    }
   }, [isMobile]);
 
   return {
@@ -316,6 +324,90 @@ export const useWebGLCompatibility = () => {
   return webGLSupport;
 };
 
+/**
+ * Hook pour l'optimisation du scroll
+ */
+export const useScrollOptimization = () => {
+  const { isMobile, isTouch } = useResponsiveOptimization();
+  const [isScrolling, setIsScrolling] = useState(false);
+  const [scrollDirection, setScrollDirection] = useState('down');
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    let ticking = false;
+    let scrollTimer = null;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          
+          // Détection direction scroll
+          if (currentScrollY > lastScrollY) {
+            setScrollDirection('down');
+          } else if (currentScrollY < lastScrollY) {
+            setScrollDirection('up');
+          }
+          
+          setLastScrollY(currentScrollY);
+          setIsScrolling(true);
+          
+          // Réinitialiser l'état de scroll après 150ms
+          clearTimeout(scrollTimer);
+          scrollTimer = setTimeout(() => {
+            setIsScrolling(false);
+          }, 150);
+          
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    // Optimisation des événements de scroll
+    const scrollOptions = { passive: true };
+    window.addEventListener('scroll', handleScroll, scrollOptions);
+    
+    // Configuration optimisée selon l'appareil
+    if (isMobile) {
+      // Optimisations mobiles spéciales
+      document.body.style.overscrollBehaviorY = 'contain';
+      document.documentElement.style.scrollBehavior = 'smooth';
+    }
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll, scrollOptions);
+      clearTimeout(scrollTimer);
+    };
+  }, [lastScrollY, isMobile]);
+
+  const scrollToSection = useCallback((elementId, offset = 0) => {
+    const element = document.getElementById(elementId);
+    if (element) {
+      const elementPosition = element.offsetTop - offset;
+      window.scrollTo({
+        top: elementPosition,
+        behavior: 'smooth'
+      });
+    }
+  }, []);
+
+  const scrollToTop = useCallback(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }, []);
+
+  return {
+    isScrolling,
+    scrollDirection,
+    scrollToSection,
+    scrollToTop,
+    lastScrollY
+  };
+};
+
 // Export du hook principal avec des utilitaires
 export default {
   useResponsiveOptimization,
@@ -324,6 +416,7 @@ export default {
   useImageOptimization,
   useResponsiveNavigation,
   useWebGLCompatibility,
+  useScrollOptimization,
   BREAKPOINTS,
   RESPONSIVE_CONFIG
 };
