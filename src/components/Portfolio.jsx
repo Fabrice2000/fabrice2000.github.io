@@ -4,6 +4,13 @@ import { OrbitControls } from '@react-three/drei';
 import './Portfolio.css';
 import './IntroPage.css';
 
+// Mes différentes sections du portfolio
+import Accueil from './sections/Accueil';
+import Projets from './sections/Projets';
+import Contact from './sections/Contact';
+import Avatar from './Avatar';
+import IntroPage from './IntroPage';
+
 // Hook personnalisé pour la responsivité
 const useResponsiveAvatar = () => {
   const [screenSize, setScreenSize] = useState('desktop');
@@ -34,13 +41,6 @@ const useResponsiveAvatar = () => {
   
   return avatarConfig[screenSize];
 };
-
-// Mes différentes sections du portfolio
-import Accueil from './sections/Accueil';
-import Projets from './sections/Projets';
-import Contact from './sections/Contact';
-import Avatar from './Avatar';
-import IntroPage from './IntroPage';
 
 function Portfolio() {
   const [showIntro, setShowIntro] = useState(true);
