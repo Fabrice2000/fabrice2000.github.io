@@ -93,7 +93,7 @@ const IntroPage = ({ onIntroComplete }) => {
       <div className="intro-avatar-container">
         <Suspense fallback={<div className="loading-avatar"></div>}>
           <Canvas 
-            camera={{ position: [0, 1, 8], fov: 50 }}
+            camera={{ position: [0, 0, 6], fov: 75 }}
             style={{ width: '100%', height: '60vh' }}
           >
             <ambientLight intensity={1.5} />
@@ -104,7 +104,7 @@ const IntroPage = ({ onIntroComplete }) => {
             />
             <pointLight position={[-5, 5, 5]} intensity={1.5} color="#64b5f6" />
             
-            <OpeningAvatar scale={2.5} position={[0, -1.2, -2]} />
+            <OpeningAvatar scale={2.5} position={[0, -0.5, -2]} />
           </Canvas>
         </Suspense>
       </div>
