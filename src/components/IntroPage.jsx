@@ -90,6 +90,8 @@ const IntroPage = ({ onIntroComplete }) => {
             />
           ))}
         </div>
+      </div>
+
       {/* Avatar qui marche */}
       <div className="intro-avatar-container">
         <Suspense fallback={<div className="loading-avatar"></div>}>
