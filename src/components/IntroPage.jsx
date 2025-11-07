@@ -5,14 +5,14 @@ import Avatar from './Avatar'; // Avatar de fallback
 
 // Préchargement du modèle
 const modelPath = process.env.NODE_ENV === 'development' 
-  ? `${process.env.PUBLIC_URL || ''}/marche.glb`
-  : '/portfolio-3d/marche.glb';
+  ? `${process.env.PUBLIC_URL || ''}/ouvertureavatar.glb`
+  : '/portfolio-3d/ouvertureavatar.glb';
 
 // Précharger le modèle au chargement du module
 useGLTF.preload(modelPath);
 
-// Composant Avatar qui marche pour l'intro
-const WalkingAvatar = ({ scale = 2, position = [0, -1.2, 0] }) => {
+// Composant Avatar d'ouverture pour l'intro
+const OpeningAvatar = ({ scale = 2, position = [0, -1.2, 0] }) => {
   const gltf = useGLTF(modelPath);
   const { actions } = useAnimations(gltf.animations, gltf.scene);
   
@@ -89,7 +89,7 @@ const IntroPage = ({ onIntroComplete }) => {
         </div>
       </div>
 
-      {/* Avatar qui marche - PREMIER ÉLÉMENT */}
+      {/* Avatar d'ouverture - PREMIER ÉLÉMENT */}
       <div className="intro-avatar-container">
         <Suspense fallback={<div className="loading-avatar"></div>}>
           <Canvas 
@@ -104,7 +104,7 @@ const IntroPage = ({ onIntroComplete }) => {
             />
             <pointLight position={[-5, 5, 5]} intensity={1.5} color="#64b5f6" />
             
-            <WalkingAvatar scale={2.5} position={[0, -1.2, 0]} />
+            <OpeningAvatar scale={2.5} position={[0, -1.2, 0]} />
           </Canvas>
         </Suspense>
       </div>
