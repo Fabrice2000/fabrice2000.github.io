@@ -28,6 +28,7 @@
   overflow: hidden;
   transform: translateZ(0); /* Force GPU acceleration */
   backface-visibility: hidden; /* Optimisation webkit */
+  padding-top: 20px; /* Décalage de 20px vers le bas */
 }
 
 /* Fond avec particules flottantes */
