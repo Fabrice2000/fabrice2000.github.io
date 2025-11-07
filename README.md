@@ -42,6 +42,7 @@ Le site est déployé automatiquement sur GitHub Pages :
 ## 👨‍💻 Développeur
 
 **Fabrice KOUADJEU NGATCHOU**
+
 - Développeur Full-Stack
 - Spécialisé en React, Three.js, et IA
 - 📍 Paris, France
