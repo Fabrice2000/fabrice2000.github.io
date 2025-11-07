@@ -52,13 +52,7 @@ const IntroPage = ({ onIntroComplete }) => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Animation du texte de chargement
-    const textInterval = setInterval(() => {
-      setLoadingText(prev => {
-        if (prev === 'Chargement...') return 'Chargement';
-        return prev + '.';
-      });
-    }, 500);
+
 
     // Progression du chargement
     const progressInterval = setInterval(() => {
@@ -96,19 +90,9 @@ const IntroPage = ({ onIntroComplete }) => {
             />
           ))}
         </div>
-        
-        {/* Éléments décoratifs animés */}
-        <div className="decorative-elements">
-          <div className="floating-shape shape-1"></div>
-          <div className="floating-shape shape-2"></div>
-          <div className="floating-shape shape-3"></div>
-          <div className="floating-shape shape-4"></div>
-        </div>
-      </div>
-
       {/* Avatar qui marche */}
       <div className="intro-avatar-container">
-        <Suspense fallback={<div className="loading-avatar">Chargement de l'avatar...</div>}>
+        <Suspense fallback={<div className="loading-avatar"></div>}>
           <Canvas 
             camera={{ position: [0, 1, 8], fov: 50 }}
             style={{ width: '100%', height: '60vh' }}
@@ -135,7 +119,7 @@ const IntroPage = ({ onIntroComplete }) => {
           Je suis Fabrice KOUADJEU
         </h2>
         <p className="intro-description">
-          Développeur Full-Stack & Créateur d'expériences numériques
+          Soyez le bienvenu dans mon univers.
         </p>
         
         {/* Barre de progression avec animations */}

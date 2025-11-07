@@ -190,14 +190,14 @@ function Accueil({ onNavigate }) {
                   onClick={() => handleAnimationChange('rumba')}
                   disabled={isAnimating}
                 >
-                  💃 Danser la Rumba
+                  🎤 Hip-Hop Style
                 </button>
                 <button 
                   className={`animation-btn ${currentAnimation === 'hiphop' ? 'active' : ''} ${isAnimating ? 'disabled' : ''}`}
                   onClick={() => handleAnimationChange('hiphop')}
                   disabled={isAnimating}
                 >
-                  🎤 Hip-Hop Style
+                  💃 Danser la Rumba
                 </button>
               </div>
               <div className="animation-status">

@@ -144,38 +144,41 @@
   }
 }
 
-/* Container de l'avatar */
+/* Container de l'avatar - FOCUS PRINCIPAL */
 .intro-avatar-container {
   width: 100%;
-  height: 60vh;
+  height: 65vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
   position: relative;
   overflow: hidden;
+  transform: scale(1.1);
+  z-index: 5;
 }
 
-/* Contenu textuel */
+/* Contenu textuel - RÉDUIT POUR FOCUS AVATAR */
 .intro-content {
   text-align: center;
   z-index: 10;
-  max-width: 600px;
-  padding: 0 2rem;
+  max-width: 400px;
+  padding: 0 1rem;
+  opacity: 0.9;
 }
 
 .intro-title {
-  font-size: 3rem;
-  font-weight: 700;
+  font-size: 1.8rem;
+  font-weight: 600;
   color: #333;
-  margin-bottom: 1rem;
+  margin-bottom: 0.3rem;
   animation: slideInFromBottom 0.8s ease-out;
 }
 
 .intro-title .wave {
   display: inline-block;
   animation: waveHand 4s ease-in-out infinite;
-  font-size: 3.5rem;
+  font-size: 2rem;
   will-change: transform;
   transform: translateZ(0);
 }
@@ -187,45 +190,46 @@
 }
 
 .intro-subtitle {
-  font-size: 2rem;
+  font-size: 1.2rem;
   font-weight: 500;
   background: linear-gradient(45deg, #667eea, #764ba2);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-bottom: 1rem;
+  margin-bottom: 0.3rem;
   animation: slideInFromBottom 0.8s ease-out 0.2s both;
 }
 
 .intro-description {
-  font-size: 1.2rem;
+  font-size: 0.85rem;
   color: #666;
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
   animation: slideInFromBottom 0.8s ease-out 0.4s both;
+  line-height: 1.3;
 }
 
-/* Loading */
+/* Loading - SIMPLIFIÉ POUR FOCUS AVATAR */
 .loading-container {
   width: 100%;
-  max-width: 200px;
+  max-width: 120px;
   margin: 0 auto;
   animation: slideInFromBottom 0.8s ease-out 0.6s both;
 }
 
 .loading-bar {
   width: 100%;
-  height: 8px;
+  height: 4px;
   background: rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
+  border-radius: 2px;
   overflow: hidden;
-  margin-bottom: 1rem;
+  margin-bottom: 0.3rem;
   position: relative;
 }
 
 .loading-fill {
   height: 100%;
   background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-  border-radius: 4px;
+  border-radius: 2px;
   transition: width 0.3s ease;
   position: relative;
 }
@@ -248,42 +252,42 @@
 }
 
 .loading-text {
-  font-size: 1.1rem;
+  font-size: 0.75rem;
   color: #555;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.2rem;
 }
 
 .loading-percentage {
-  font-size: 2rem;
+  font-size: 1.2rem;
   font-weight: 600;
   color: #667eea;
-  margin-bottom: 1rem;
+  margin-bottom: 0.3rem;
 }
 
 /* Indication pour passer */
 .skip-hint {
   position: absolute;
-  bottom: 2rem;
+  bottom: 1rem;
   text-align: center;
   animation: fadeInUp 0.5s ease-out;
 }
 
 .skip-hint p {
   color: #888;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   animation: pulse 2s infinite;
 }
 
 .loading-dots {
   display: flex;
   justify-content: center;
-  gap: 4px;
-  margin-top: 10px;
+  gap: 3px;
+  margin-top: 5px;
 }
 
 .loading-dots span {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: #667eea;
   animation: loadingDot 1.4s ease-in-out infinite;
@@ -308,20 +312,16 @@
   }
 }
 
-/* Features - nouvelles animations */
+/* Features - MASQUÉES POUR FOCUS AVATAR */
 .intro-features {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-top: 2rem;
-  animation: slideInFromBottom 0.8s ease-out 0.8s both;
+  display: none;
 }
 
 .feature-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.3rem;
   animation: featureFloat 3s ease-in-out infinite;
 }
 
@@ -334,12 +334,12 @@
 }
 
 .feature-icon {
-  font-size: 2rem;
+  font-size: 1.5rem;
   animation: iconRotate 4s ease-in-out infinite;
 }
 
 .feature-text {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: #666;
   font-weight: 500;
 }
@@ -448,37 +448,53 @@
   }
 }
 
-/* Responsive */
+/* Responsive - FOCUS AVATAR MAINTENU */
 @media (max-width: 768px) {
   .intro-title {
-    font-size: 2.5rem;
+    font-size: 1.6rem;
   }
   
   .intro-subtitle {
-    font-size: 1.5rem;
-  }
-  
-  .intro-description {
     font-size: 1rem;
   }
   
+  .intro-description {
+    font-size: 0.8rem;
+  }
+  
   .intro-avatar-container {
-    height: 50vh;
-    margin-bottom: 1.5rem;
+    height: 55vh;
+    margin-bottom: 0.5rem;
+    transform: scale(1.05);
   }
 }
 
 @media (max-width: 480px) {
   .intro-avatar-container {
-    height: 45vh;
-    margin-bottom: 1rem;
+    height: 50vh;
+    margin-bottom: 0.3rem;
+    transform: scale(1);
   }
   
   .intro-title {
-    font-size: 2rem;
+    font-size: 1.4rem;
   }
   
   .intro-subtitle {
-    font-size: 1.3rem;
+    font-size: 0.9rem;
+  }
+  
+  .intro-description {
+    font-size: 0.75rem;
+    margin-bottom: 0.8rem;
+    line-height: 1.2;
+  }
+  
+  .loading-container {
+    max-width: 100px;
+  }
+  
+  .loading-percentage {
+    font-size: 1rem;
   }
 }
