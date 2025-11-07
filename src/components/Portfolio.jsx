@@ -4,6 +4,37 @@ import { OrbitControls } from '@react-three/drei';
 import './Portfolio.css';
 import './IntroPage.css';
 
+// Hook personnalisé pour la responsivité
+const useResponsiveAvatar = () => {
+  const [screenSize, setScreenSize] = useState('desktop');
+  
+  useEffect(() => {
+    const updateScreenSize = () => {
+      const width = window.innerWidth;
+      if (width >= 1400) setScreenSize('xl');
+      else if (width >= 992) setScreenSize('desktop');
+      else if (width >= 768) setScreenSize('tablet');
+      else if (width >= 576) setScreenSize('mobile');
+      else setScreenSize('xs');
+    };
+    
+    updateScreenSize();
+    window.addEventListener('resize', updateScreenSize);
+    return () => window.removeEventListener('resize', updateScreenSize);
+  }, []);
+  
+  // Configuration responsive pour l'avatar
+  const avatarConfig = {
+    xl: { fov: 45, scale: 1.6, position: [0, -1.2, 0] },
+    desktop: { fov: 45, scale: 1.5, position: [0, -1.2, 0] },
+    tablet: { fov: 50, scale: 1.4, position: [0, -1.1, 0] },
+    mobile: { fov: 55, scale: 1.3, position: [0, -1.0, 0] },
+    xs: { fov: 60, scale: 1.2, position: [0, -0.9, 0] }
+  };
+  
+  return avatarConfig[screenSize];
+};
+
 // Mes différentes sections du portfolio
 import Accueil from './sections/Accueil';
 import Projets from './sections/Projets';
@@ -16,6 +47,9 @@ function Portfolio() {
   const [activeSection, setActiveSection] = useState('accueil');
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [nextSection, setNextSection] = useState('');
+  
+  // Configuration responsive pour l'avatar
+  const avatarConfig = useResponsiveAvatar();
 
   const handleIntroComplete = () => {
     setShowIntro(false);
@@ -99,7 +133,7 @@ function Portfolio() {
           </div>
         </div>
         <div className="nav-avatar">
-          <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+          <Canvas camera={{ position: [0, 0, 5], fov: avatarConfig.fov }}>
             {/* Éclairage optimisé pour mon avatar 3D */}
             <ambientLight intensity={1.8} />
             <directionalLight 
@@ -115,7 +149,10 @@ function Portfolio() {
               intensity={1.2} 
               color="#64b5f6"
             />
-            <Avatar scale={1.5} position={[0, -1.2, 0]} />
+            <Avatar 
+              scale={avatarConfig.scale} 
+              position={avatarConfig.position} 
+            />
             <OrbitControls 
               enableZoom={false} 
               enablePan={false} 
