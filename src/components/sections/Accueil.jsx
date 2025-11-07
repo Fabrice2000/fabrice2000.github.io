@@ -164,6 +164,16 @@ function Accueil({ onNavigate }) {
               >
                 💬 Me contacter
               </button>
+              {/* 📄 Bouton Télécharger CV inspiré du portfolio */}
+              <a 
+                href={process.env.NODE_ENV === 'development' 
+                  ? `${process.env.PUBLIC_URL || ''}/CV S Kouadjeu fabrice devellopeur.pdf`
+                  : '/portfolio-3d/CV S Kouadjeu fabrice devellopeur.pdf'} 
+                className="btn-primary cv-download-btn"
+                download="CV_Fabrice_KOUADJEU_Developpeur.pdf"
+              >
+                📄 Télécharger Mon CV
+              </a>
             </div>
           </div>
           <div className="avatar-section">
@@ -408,6 +418,178 @@ function Accueil({ onNavigate }) {
               </div>
               <div className="skill-level">
                 <div className="skill-bar" style={{width: '75%'}}></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 🎓 SECTION EXPÉRIENCES ET ÉDUCATION inspirée du portfolio */}
+      <section className="resume-section">
+        <div className="container">
+          <div className="row">
+            {/* Éducation */}
+            <div className="col-lg-6 col-12">
+              <h3>🎓 Éducations</h3>
+              <div className="timeline">
+                <div className="timeline-wrapper">
+                  <div className="timeline-yr">
+                    <span>2024</span>
+                  </div>
+                  <div className="timeline-info">
+                    <h4><span>Master en Ingénierie Logicielle & IA</span></h4>
+                    <small>Compétences acquises</small>
+                    <p>- Architecture et conception d'applications web complexes avec React.js et Three.js</p>
+                    <p>- Développement d'interfaces 3D interactives et expériences utilisateur immersives</p>
+                    <p>- Intégration d'intelligence artificielle dans les applications web modernes</p>
+                    <p>- Optimisation des performances et responsive design avancé</p>
+                  </div>
+                </div>
+
+                <div className="timeline-wrapper">
+                  <div className="timeline-yr">
+                    <span>2022</span>
+                  </div>
+                  <div className="timeline-info">
+                    <h4><span>Bachelor en Développement Web & Mobile</span></h4>
+                    <small>Compétences acquises</small>
+                    <p>- Développement Full-Stack avec Node.js, React et bases de données</p>
+                    <p>- Création d'APIs REST et intégration de services cloud</p>
+                    <p>- Méthodologies Agile et gestion de projets techniques</p>
+                  </div>
+                </div>
+
+                <div className="timeline-wrapper">
+                  <div className="timeline-yr">
+                    <span>2021</span>
+                  </div>
+                  <div className="timeline-info">
+                    <h4><span>Certification Développement JavaScript Avancé</span></h4>
+                    <small>Compétences acquises</small>
+                    <p>- Maîtrise approfondie de JavaScript ES6+ et frameworks modernes</p>
+                    <p>- Développement d'applications web progressives (PWA)</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Expériences */}
+            <div className="col-lg-6 col-12">
+              <h3>💼 Expériences Professionnelles</h3>
+              <div className="timeline">
+                <div className="timeline-wrapper">
+                  <div className="timeline-yr">
+                    <span>2024</span>
+                  </div>
+                  <div className="timeline-info">
+                    <h4><span>Développeur Full-Stack Senior</span><small>Freelance</small></h4>
+                    <p>- Création de portfolios 3D interactifs avec React Three Fiber</p>
+                    <p>- Développement d'applications web modernes avec animations avancées</p>
+                    <p>- Optimisation des performances et intégration de chatbots IA</p>
+                    <p>- Consultation technique pour des startups et PME</p>
+                  </div>
+                </div>
+
+                <div className="timeline-wrapper">
+                  <div className="timeline-yr">
+                    <span>2023</span>
+                  </div>
+                  <div className="timeline-info">
+                    <h4><span>Développeur Frontend React</span><small>TechCorp</small></h4>
+                    <p>- Développement d'interfaces utilisateur complexes avec React.js</p>
+                    <p>- Intégration d'APIs REST et gestion d'état avec Redux</p>
+                    <p>- Collaboration étroite avec les équipes UX/UI et backend</p>
+                  </div>
+                </div>
+
+                <div className="timeline-wrapper">
+                  <div className="timeline-yr">
+                    <span>2022</span>
+                  </div>
+                  <div className="timeline-info">
+                    <h4><span>Développeur Web Junior</span><small>WebStudio</small></h4>
+                    <p>- Participation au développement de sites web responsives</p>
+                    <p>- Apprentissage des meilleures pratiques en développement web</p>
+                    <p>- Intégration de systèmes de gestion de contenu (CMS)</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 🛠️ SECTION TECHNOLOGIES ET COMPÉTENCES détaillées */}
+      <section className="technologies-section">
+        <div className="container">
+          <div className="section-title">
+            <h2>🛠️ Mes Compétences et Outils</h2>
+          </div>
+          
+          <div className="tech-grid">
+            <div className="tech-category">
+              <div className="tech-icon">💻</div>
+              <h3 className="tech-title">Langages de Programmation</h3>
+              <div className="tech-list">
+                <span className="tech-item">JavaScript ES6+</span>
+                <span className="tech-item">TypeScript</span>
+                <span className="tech-item">Python</span>
+                <span className="tech-item">HTML5/CSS3</span>
+              </div>
+            </div>
+
+            <div className="tech-category">
+              <div className="tech-icon">⚛️</div>
+              <h3 className="tech-title">Frameworks & Bibliothèques</h3>
+              <div className="tech-list">
+                <span className="tech-item">React.js</span>
+                <span className="tech-item">Three.js</span>
+                <span className="tech-item">Node.js</span>
+                <span className="tech-item">Express.js</span>
+              </div>
+            </div>
+
+            <div className="tech-category">
+              <div className="tech-icon">🛠️</div>
+              <h3 className="tech-title">Outils de Développement</h3>
+              <div className="tech-list">
+                <span className="tech-item">Git/GitHub</span>
+                <span className="tech-item">VS Code</span>
+                <span className="tech-item">Webpack</span>
+                <span className="tech-item">Docker</span>
+              </div>
+            </div>
+
+            <div className="tech-category">
+              <div className="tech-icon">🗄️</div>
+              <h3 className="tech-title">Bases de Données</h3>
+              <div className="tech-list">
+                <span className="tech-item">MongoDB</span>
+                <span className="tech-item">PostgreSQL</span>
+                <span className="tech-item">MySQL</span>
+                <span className="tech-item">Firebase</span>
+              </div>
+            </div>
+
+            <div className="tech-category">
+              <div className="tech-icon">🔒</div>
+              <h3 className="tech-title">Sécurité & DevOps</h3>
+              <div className="tech-list">
+                <span className="tech-item">JWT</span>
+                <span className="tech-item">OAuth</span>
+                <span className="tech-item">CI/CD</span>
+                <span className="tech-item">Netlify/Vercel</span>
+              </div>
+            </div>
+
+            <div className="tech-category">
+              <div className="tech-icon">👥</div>
+              <h3 className="tech-title">Méthodologies</h3>
+              <div className="tech-list">
+                <span className="tech-item">Agile/Scrum</span>
+                <span className="tech-item">TDD</span>
+                <span className="tech-item">Code Review</span>
+                <span className="tech-item">Git Flow</span>
               </div>
             </div>
           </div>

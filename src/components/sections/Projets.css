@@ -860,3 +860,394 @@
     display: none !important;
   }
 }
+
+/* 🎠 CARROUSEL DE PROJETS INSPIRÉ DU PORTFOLIO DE ROMAIN */
+
+.projects-carousel {
+  margin: 3rem 0 4rem 0;
+  padding: 2rem 0;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.carousel-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.project-item {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.project-item:hover {
+  transform: translateY(-10px);
+  border-color: #ffc200;
+  box-shadow: 0 20px 40px rgba(255, 194, 0, 0.2);
+}
+
+.project-info {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.project-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.project-item:hover .project-image {
+  transform: scale(1.05);
+}
+
+.project-overlay {
+  padding: 1.5rem;
+  background: linear-gradient(135deg, 
+    rgba(102, 126, 234, 0.1) 0%, 
+    rgba(118, 75, 162, 0.1) 50%, 
+    rgba(240, 147, 251, 0.1) 100%);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.project-overlay h4 {
+  color: #ffc200;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.project-overlay p {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  flex: 1;
+}
+
+.project-tech-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.tech-tag-small {
+  background: rgba(255, 194, 0, 0.2);
+  color: #ffc200;
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  border: 1px solid rgba(255, 194, 0, 0.3);
+}
+
+.project-link {
+  color: #ffc200;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.project-link:hover {
+  color: #fff;
+  text-decoration: none;
+  transform: translateX(5px);
+}
+
+/* 🎯 STYLES CTA AMÉLIORÉS */
+
+.btn-cta {
+  background: linear-gradient(45deg, #ffc200, #ffdd57);
+  border: none;
+  border-radius: 15px;
+  padding: 15px 30px;
+  color: #2c2c2c;
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-cta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn-cta:hover::before {
+  left: 100%;
+}
+
+.btn-cta:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 35px rgba(255, 194, 0, 0.3);
+  color: #2c2c2c;
+}
+
+/* 📱 RESPONSIVE CARROUSEL */
+@media (max-width: 768px) {
+  .carousel-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .project-overlay {
+    padding: 1rem;
+  }
+  
+  .project-image {
+    height: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .projects-carousel {
+    margin: 2rem 0;
+  }
+  
+  .tech-tag-small {
+    font-size: 0.6rem;
+    padding: 0.1rem 0.3rem;
+  }
+}
+
+/* ===========================================
+   STYLES POUR DIFFÉRENTS TYPES D'IMAGES
+   =========================================== */
+
+.project-image-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  width: 100%;
+  height: 200px;
+  transition: all 0.3s ease;
+}
+
+.project-image-container .project-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.project-image-container .image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 12px;
+}
+
+/* Style Profile - Portfolio personnel */
+.project-image-container.profile .image-overlay {
+  background: linear-gradient(135deg, rgba(0, 123, 255, 0.2), rgba(0, 123, 255, 0.1));
+}
+
+.project-image-container.profile:hover .image-overlay {
+  opacity: 1;
+}
+
+.project-image-container.profile:hover .project-image {
+  transform: scale(1.05);
+}
+
+/* Style Professional - Applications business */
+.project-image-container.professional .image-overlay {
+  background: linear-gradient(135deg, rgba(40, 167, 69, 0.2), rgba(40, 167, 69, 0.1));
+}
+
+.project-image-container.professional:hover .image-overlay {
+  opacity: 1;
+}
+
+.project-image-container.professional:hover .project-image {
+  transform: scale(1.08) rotate(1deg);
+}
+
+/* Style Tech - Projets techniques */
+.project-image-container.tech .image-overlay {
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 193, 7, 0.1));
+}
+
+.project-image-container.tech:hover .image-overlay {
+  opacity: 1;
+}
+
+.project-image-container.tech:hover .project-image {
+  transform: scale(1.1);
+  filter: brightness(1.1);
+}
+
+/* Style Business - E-commerce et affaires */
+.project-image-container.business .image-overlay {
+  background: linear-gradient(135deg, rgba(220, 53, 69, 0.2), rgba(220, 53, 69, 0.1));
+}
+
+.project-image-container.business:hover .image-overlay {
+  opacity: 1;
+}
+
+.project-image-container.business:hover .project-image {
+  transform: scale(1.05) rotate(-1deg);
+}
+
+/* Style Analytics - Données et graphiques */
+.project-image-container.analytics .image-overlay {
+  background: linear-gradient(135deg, rgba(102, 16, 242, 0.2), rgba(102, 16, 242, 0.1));
+}
+
+.project-image-container.analytics:hover .image-overlay {
+  opacity: 1;
+}
+
+.project-image-container.analytics:hover .project-image {
+  transform: scale(1.07);
+  filter: contrast(1.1);
+}
+
+/* Effet de badge sur les images selon le type */
+.project-image-container::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  z-index: 3;
+}
+
+.project-image-container.profile::after {
+  background: #007bff;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.6);
+}
+
+.project-image-container.professional::after {
+  background: #28a745;
+  box-shadow: 0 0 10px rgba(40, 167, 69, 0.6);
+}
+
+.project-image-container.tech::after {
+  background: #ffc107;
+  box-shadow: 0 0 10px rgba(255, 193, 7, 0.6);
+}
+
+.project-image-container.business::after {
+  background: #dc3545;
+  box-shadow: 0 0 10px rgba(220, 53, 69, 0.6);
+}
+
+.project-image-container.analytics::after {
+  background: #6610f2;
+  box-shadow: 0 0 10px rgba(102, 16, 242, 0.6);
+}
+
+/* Animation d'apparition des badges */
+.project-image-container:hover::after {
+  transform: scale(1.3);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+}
+
+/* ===========================================
+   ICÔNES DE TYPE DE PROJET
+   =========================================== */
+
+.project-type-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3rem;
+  opacity: 0;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+}
+
+.project-image-container:hover .project-type-icon {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+/* Animations spécifiques par type */
+.project-image-container.profile:hover .project-type-icon {
+  animation: pulse-blue 2s infinite;
+}
+
+.project-image-container.professional:hover .project-type-icon {
+  animation: bounce-green 1.5s infinite;
+}
+
+.project-image-container.tech:hover .project-type-icon {
+  animation: rotate-yellow 3s linear infinite;
+}
+
+.project-image-container.business:hover .project-type-icon {
+  animation: shake-red 0.8s infinite;
+}
+
+.project-image-container.analytics:hover .project-type-icon {
+  animation: float-purple 2s ease-in-out infinite;
+}
+
+@keyframes pulse-blue {
+  0%, 100% { transform: translate(-50%, -50%) scale(1.2); }
+  50% { transform: translate(-50%, -50%) scale(1.4); }
+}
+
+@keyframes bounce-green {
+  0%, 20%, 50%, 80%, 100% { transform: translate(-50%, -50%) scale(1.2); }
+  40% { transform: translate(-50%, -50%) scale(1.5); }
+  60% { transform: translate(-50%, -50%) scale(1.3); }
+}
+
+@keyframes rotate-yellow {
+  from { transform: translate(-50%, -50%) scale(1.2) rotate(0deg); }
+  to { transform: translate(-50%, -50%) scale(1.2) rotate(360deg); }
+}
+
+@keyframes shake-red {
+  0%, 100% { transform: translate(-50%, -50%) scale(1.2); }
+  25% { transform: translate(-48%, -50%) scale(1.2); }
+  75% { transform: translate(-52%, -50%) scale(1.2); }
+}
+
+@keyframes float-purple {
+  0%, 100% { transform: translate(-50%, -50%) scale(1.2); }
+  50% { transform: translate(-50%, -55%) scale(1.3); }
+}

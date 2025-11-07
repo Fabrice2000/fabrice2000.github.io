@@ -1070,3 +1070,218 @@
     filter: grayscale(100%);
   }
 }
+
+/* 📄 Style pour le bouton CV */
+.cv-download-btn {
+  background: linear-gradient(45deg, #28a745, #20c997) !important;
+  color: white !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  padding: 12px 24px !important;
+  border-radius: 15px !important;
+  font-weight: 600 !important;
+  transition: var(--enhanced-transition) !important;
+  margin: 0.5rem !important;
+}
+
+.cv-download-btn:hover {
+  background: linear-gradient(45deg, #218838, #1e9960) !important;
+  color: white !important;
+  text-decoration: none !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 25px rgba(40, 167, 69, 0.3) !important;
+}
+
+/* 🎓 SECTION EXPÉRIENCES ET ÉDUCATION - Style Timeline */
+.resume-section {
+  padding: 5rem 0;
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  margin: 3rem 0;
+  border-radius: 20px;
+}
+
+.resume-section h3 {
+  color: var(--primary-yellow);
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-weight: 700;
+}
+
+.timeline {
+  position: relative;
+  padding: 2rem 0;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 30px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, var(--primary-yellow), rgba(255, 194, 0, 0.3));
+}
+
+.timeline-wrapper {
+  position: relative;
+  padding-left: 80px;
+  margin-bottom: 3rem;
+  opacity: 0;
+  transform: translateX(-30px);
+  animation: slideInTimeline 0.8s ease forwards;
+}
+
+.timeline-wrapper:nth-child(1) { animation-delay: 0.2s; }
+.timeline-wrapper:nth-child(2) { animation-delay: 0.4s; }
+.timeline-wrapper:nth-child(3) { animation-delay: 0.6s; }
+
+@keyframes slideInTimeline {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.timeline-yr {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 60px;
+  height: 60px;
+  background: var(--primary-yellow);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #2c2c2c;
+  font-size: 0.9rem;
+  box-shadow: 0 5px 15px rgba(255, 194, 0, 0.3);
+  z-index: 2;
+}
+
+.timeline-info {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 1.5rem;
+  position: relative;
+  transition: var(--enhanced-transition);
+}
+
+.timeline-info::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 20px;
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-right: 10px solid rgba(255, 255, 255, 0.1);
+}
+
+.timeline-info:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  border-color: var(--primary-yellow);
+}
+
+.timeline-info h4 {
+  color: var(--primary-yellow);
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.timeline-info small {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  display: block;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.timeline-info p {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+}
+
+/* 🛠️ SECTION TECHNOLOGIES */
+.technologies-section {
+  padding: 5rem 0;
+  position: relative;
+}
+
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 3rem 0;
+}
+
+.tech-category {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  transition: var(--enhanced-transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.tech-category:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  border-color: var(--primary-yellow);
+}
+
+.tech-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  transition: var(--enhanced-transition);
+}
+
+.tech-category:hover .tech-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.tech-title {
+  color: var(--primary-yellow);
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.tech-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.tech-item {
+  background: rgba(255, 194, 0, 0.1);
+  border: 1px solid rgba(255, 194, 0, 0.3);
+  color: var(--primary-yellow);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: var(--enhanced-transition);
+  cursor: default;
+}
+
+.tech-item:hover {
+  background: var(--primary-yellow);
+  color: #2c2c2c;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 194, 0, 0.3);
+}
