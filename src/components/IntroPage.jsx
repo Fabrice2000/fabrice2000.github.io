@@ -104,7 +104,7 @@ const IntroPage = ({ onIntroComplete }) => {
             />
             <pointLight position={[-5, 5, 5]} intensity={1.5} color="#64b5f6" />
             
-            <OpeningAvatar scale={2.5} position={[0, -1.2, 0]} />
+            <OpeningAvatar scale={2.5} position={[0, -1.2, -2]} />
           </Canvas>
         </Suspense>
       </div>
