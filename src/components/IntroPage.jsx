@@ -53,13 +53,11 @@ const IntroPage = ({ onIntroComplete }) => {
 
   useEffect(() => {
 
-
     // Progression du chargement
     const progressInterval = setInterval(() => {
       setProgress(prev => {
         if (prev >= 100) {
           clearInterval(progressInterval);
-          clearInterval(textInterval);
           setTimeout(onIntroComplete, 500);
           return 100;
         }
@@ -68,7 +66,6 @@ const IntroPage = ({ onIntroComplete }) => {
     }, 200);
 
     return () => {
-      clearInterval(textInterval);
       clearInterval(progressInterval);
     };
   }, [onIntroComplete]);
