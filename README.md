@@ -24,7 +24,7 @@ Portfolio interactif avec avatar 3D créé avec React et Three.js.
 
 ```bash
 # Cloner le repository
-git clone https://github.com/Fabrice2000/portfolio-3d.git
+git clone https://github.com/fabrice2000.github.io
 cd portfolio-3d
 
 # Installer les dépendances
@@ -70,7 +70,7 @@ REACT_APP_EMAILJS_PUBLIC_KEY=votre_public_key
 ## 🌐 Déploiement
 
 Le site est déployé automatiquement sur GitHub Pages :
-**https://Fabrice2000.github.io/portfolio-3d**
+**https://Fabrice2000.github.io**
 
 ### Déployer manuellement
 
