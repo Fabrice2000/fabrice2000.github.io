@@ -4,11 +4,9 @@ import { useGLTF, useAnimations } from '@react-three/drei';
 import Avatar from './Avatar'; // Avatar de fallback
 
 // Préchargement du modèle
-const modelPath = process.env.NODE_ENV === 'development' 
+const modelPath = process.env.NODE_ENV === 'development'
   ? `${process.env.PUBLIC_URL || ''}/ouvertureavatar.glb`
-  : '/portfolio-3d/ouvertureavatar.glb';
-
-// Précharger le modèle au chargement du module
+  : '/ouvertureavatar.glb';// Précharger le modèle au chargement du module
 useGLTF.preload(modelPath);
 
 // Composant Avatar d'ouverture pour l'intro

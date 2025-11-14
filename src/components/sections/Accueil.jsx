@@ -113,7 +113,7 @@ const Accueil = React.memo(({ onNavigate }) => {
               <a 
                 href={process.env.NODE_ENV === 'development' 
                   ? `${process.env.PUBLIC_URL || ''}/CV S Kouadjeu fabrice devellopeur.pdf`
-                  : '/portfolio-3d/CV S Kouadjeu fabrice devellopeur.pdf'} 
+                  : '/CV S Kouadjeu fabrice devellopeur.pdf'} 
                 className="btn-primary cv-download-btn"
                 download="CV_Fabrice_KOUADJEU_Developpeur.pdf"
               >
@@ -255,7 +255,7 @@ const Accueil = React.memo(({ onNavigate }) => {
             <div className="about-photo-section">
               <img src={process.env.NODE_ENV === 'development' 
                 ? `${process.env.PUBLIC_URL || ''}/photo-profile.jpg`
-                : '/portfolio-3d/photo-profile.jpg'} 
+                : '/photo-profile.jpg'} 
                 alt="Fabrice KOUADJEU" className="about-photo" />
             </div>
             <div className="about-text">

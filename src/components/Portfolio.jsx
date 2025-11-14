@@ -149,7 +149,7 @@ function Portfolio() {
           <div className="profile-photo">
             <img src={process.env.NODE_ENV === 'development' 
               ? `${process.env.PUBLIC_URL || ''}/photo-profile.jpg`
-              : '/portfolio-3d/photo-profile.jpg'} 
+              : '/photo-profile.jpg'} 
               alt="Fabrice KOUADJEU" className="profile-img" />
           </div>
           <h2>Fabrice KOUADJEU</h2>

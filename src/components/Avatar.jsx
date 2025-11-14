@@ -17,7 +17,7 @@ const Avatar = React.memo(({ scale = 1, position = [0, 0, 0], animationType = 'm
     
     return process.env.NODE_ENV === 'development' 
       ? `${process.env.PUBLIC_URL || ''}/${file}`
-      : `/portfolio-3d/${file}`;
+      : `/${file}`;
   }, [animationType]);
 
   console.log('🎬 Loading avatar model:', modelPath, 'for animation:', animationType);
@@ -93,7 +93,7 @@ const Avatar = React.memo(({ scale = 1, position = [0, 0, 0], animationType = 'm
 ['marche en ronde.glb', 'bonjour.glb', 'rumba.glb', 'hiphop.glb'].forEach(file => {
   const path = process.env.NODE_ENV === 'development' 
     ? `${process.env.PUBLIC_URL || ''}/${file}`
-    : `/portfolio-3d/${file}`;
+    : `/${file}`;
   console.log('🔄 Preloading:', path);
   useGLTF.preload(path);
 });

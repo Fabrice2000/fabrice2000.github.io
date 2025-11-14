@@ -36,7 +36,7 @@ export const preloadCriticalModels = () => {
   criticalModels.forEach(model => {
     const path = process.env.NODE_ENV === 'development' 
       ? `${process.env.PUBLIC_URL || ''}/${model}`
-      : `/portfolio-3d/${model}`;
+      : `/${model}`;
     
     // Précharger avec un délai pour éviter le blocage
     setTimeout(() => {
