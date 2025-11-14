@@ -15,7 +15,7 @@ const LoadingFallback = () => (
     color: 'white',
     fontSize: '18px'
   }}>
-    <div>Chargement du portfolio...</div>
+    <div>Chargement...</div>
   </div>
 );
 
