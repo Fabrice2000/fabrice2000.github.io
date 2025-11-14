@@ -1,85 +1,45 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import Avatar from '../Avatar';
 import './Accueil.css';
 
-// Liste des animations disponibles pour la rotation automatique
 const availableAnimations = ['marche', 'bonjour', 'rumba', 'hiphop'];
 
-function Accueil({ onNavigate }) {
+const Accueil = React.memo(({ onNavigate }) => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [avatarRotation, setAvatarRotation] = useState({ x: 0, y: 0, z: 0 });
-  const [isDragging, setIsDragging] = useState(false);
   const [autoRotate, setAutoRotate] = useState(true);
-  const [lastMousePosition, setLastMousePosition] = useState({ x: 0, y: 0 });
   const [currentAnimation, setCurrentAnimation] = useState('rumba');
   const [isAnimating, setIsAnimating] = useState(false);
   const [autoAnimationMode, setAutoAnimationMode] = useState(true);
   
-  useEffect(() => {
-    // Animation d'entrée plus rapide
-    const timer = setTimeout(() => {
-      setIsLoaded(true);
-    }, 50); // Réduit de 100ms à 50ms
-    return () => clearTimeout(timer);
+  // Optimisation des timers avec useCallback
+  const handleTimedLoad = useCallback(() => {
+    setIsLoaded(true);
   }, []);
+  
+  useEffect(() => {
+    // Animation d'entrée immédiate pour éviter les flickers
+    const timer = setTimeout(handleTimedLoad, 10); // Très rapide
+    return () => clearTimeout(timer);
+  }, [handleTimedLoad]);
 
-  // Système de changement automatique d'animation - plus rapide
+  // Système de changement automatique d'animation - optimisé avec useCallback
+  const getRandomAnimation = useCallback(() => {
+    const otherAnimations = availableAnimations.filter(anim => anim !== currentAnimation);
+    return otherAnimations[Math.floor(Math.random() * otherAnimations.length)];
+  }, [currentAnimation]);
+
   useEffect(() => {
     if (!autoAnimationMode || isAnimating) return;
-
-    const getRandomAnimation = () => {
-      const otherAnimations = availableAnimations.filter(anim => anim !== currentAnimation);
-      return otherAnimations[Math.floor(Math.random() * otherAnimations.length)];
-    };
 
     const autoChangeTimer = setTimeout(() => {
       const nextAnimation = getRandomAnimation();
       setCurrentAnimation(nextAnimation);
-    }, Math.random() * 3000 + 5000); // Réduit: entre 5 et 8 secondes (au lieu de 8-13s)
+    }, Math.random() * 2000 + 4000); // Encore plus rapide: entre 4 et 6 secondes
 
     return () => clearTimeout(autoChangeTimer);
-  }, [currentAnimation, autoAnimationMode, isAnimating]); // Supprimé availableAnimations
-
-  // Fonctions pour contrôler la rotation 3D de l'avatar principal
-  const handleMouseDown = (e) => {
-    setIsDragging(true);
-    setAutoRotate(false);
-    setLastMousePosition({ x: e.clientX, y: e.clientY });
-    e.preventDefault();
-  };
-
-  const handleMouseMove = (e) => {
-    if (isDragging) {
-      const deltaX = e.clientX - lastMousePosition.x;
-      const deltaY = e.clientY - lastMousePosition.y;
-      
-      // Rotation 3D avec sensibilité très douce pour des mouvements naturels
-      setAvatarRotation(prev => ({
-        x: prev.x + deltaY * 0.12, // Mouvement vertical → rotation X (réduit à 0.12 pour fluidité)
-        y: prev.y + deltaX * 0.12, // Mouvement horizontal → rotation Y (réduit à 0.12 pour fluidité)
-        z: prev.z // Z reste inchangé pour l'instant
-      }));
-      
-      setLastMousePosition({ x: e.clientX, y: e.clientY });
-    }
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  // Rotation Z avec la molette (sensibilité très douce)
-  const handleWheel = (e) => {
-    if (!autoRotate) {
-      e.preventDefault();
-      setAvatarRotation(prev => ({
-        ...prev,
-        z: prev.z + e.deltaY * 0.04 // Réduit à 0.04 pour mouvement ultra-smooth
-      }));
-    }
-  };
+  }, [currentAnimation, autoAnimationMode, isAnimating, getRandomAnimation]);
 
   // Fonctions pour contrôler les animations de l'avatar
   const handleAnimationChange = (animationType) => {
@@ -101,21 +61,6 @@ function Accueil({ onNavigate }) {
     }, 600); // Réduit de 1000ms à 600ms
   };
 
-  const handleAvatarAnimationEnd = (nextAnimation) => {
-    setCurrentAnimation(nextAnimation);
-    setIsAnimating(false);
-  };
-
-  useEffect(() => {
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-    
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isDragging, handleMouseMove]); // Ajout de handleMouseMove
-
   return (
     <div className={`accueil-container ${isLoaded ? 'loaded' : ''}`}>
       {/* Ma page d'accueil avec mon avatar */}
@@ -124,7 +69,7 @@ function Accueil({ onNavigate }) {
           <div className="text-content">
             <div className="greeting-animation">
               <h1 className="hero-title">
-                Bonjour ! <span className="wave">👋</span>
+                Bonjour !
               </h1>
             </div>
             <h2 className="hero-subtitle">
@@ -156,7 +101,7 @@ function Accueil({ onNavigate }) {
                 className="btn-primary"
                 onClick={() => onNavigate('projets')}
               >
-                🚀 Voir mes projets
+                Voir mes projets
               </button>
               <button 
                 className="btn-secondary"
@@ -186,63 +131,60 @@ function Accueil({ onNavigate }) {
                   onClick={() => handleAnimationChange('marche')}
                   disabled={isAnimating}
                 >
-                  🚶‍♂️ Faire moi marcher
+                   Faire moi marcher
                 </button>
                 <button 
                   className={`animation-btn ${currentAnimation === 'bonjour' ? 'active' : ''} ${isAnimating ? 'disabled' : ''}`}
                   onClick={() => handleAnimationChange('bonjour')}
                   disabled={isAnimating}
                 >
-                  👋 Dire moi bonjour
+                  Dire moi bonjour
                 </button>
                 <button 
                   className={`animation-btn ${currentAnimation === 'rumba' ? 'active' : ''} ${isAnimating ? 'disabled' : ''}`}
                   onClick={() => handleAnimationChange('rumba')}
                   disabled={isAnimating}
                 >
-                  🎤 Hip-Hop Style
+                   Hip-Hop Style
                 </button>
                 <button 
                   className={`animation-btn ${currentAnimation === 'hiphop' ? 'active' : ''} ${isAnimating ? 'disabled' : ''}`}
                   onClick={() => handleAnimationChange('hiphop')}
                   disabled={isAnimating}
                 >
-                  💃 Danser la Rumba
+                   Danser la Rumba
                 </button>
               </div>
-              <div className="animation-status">
-                {isAnimating ? (
-                  <span className="status-animating">🎬 Animation en cours...</span>
-                ) : (
-                  <span className="status-ready">
-                    ✅ Mode: {
-                      currentAnimation === 'marche' ? 'Marche' :
-                      currentAnimation === 'bonjour' ? 'Salut' :
-                      currentAnimation === 'rumba' ? 'Rumba' :
-                      'Hip-Hop'
-                    }
-                    {autoAnimationMode && (
-                      <span className="auto-mode"> 🔄</span>
-                    )}
-                  </span>
-                )}
+              
+              <div className="rotation-controls">
+                <small> Cliquez sur l'avatar et glisser pour mieux visualiser l'avatar dans l'espace 3D</small>
               </div>
             </div>
 
             <div className="avatar-container">
-              {/* Cercle de contrôle principal pour l'avatar */}
-              <div 
-                className={`main-avatar-control ${isDragging ? 'dragging' : ''}`}
-                onMouseDown={handleMouseDown}
-                onWheel={handleWheel}
-                style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
-              >
-              </div>
-              
               <Canvas 
                 camera={{ position: [0, 0, 5], fov: 50 }}
-                style={{ pointerEvents: 'auto' }}
-                gl={{ preserveDrawingBuffer: true, antialias: true }}
+                style={{ 
+                  pointerEvents: 'auto',
+                  background: 'rgba(0, 0, 0, 0.1)'
+                }}
+                gl={{ 
+                  preserveDrawingBuffer: true, 
+                  antialias: true,
+                  alpha: true,
+                  stencil: false,
+                  depth: true,
+                  powerPreference: "high-performance"
+                }}
+                onCreated={({ gl, scene, camera }) => {
+                  console.log('✅ Canvas created successfully');
+                  console.log('📷 Camera position:', camera.position);
+                  console.log('🎬 Scene children:', scene.children.length);
+                  gl.setClearColor('#000000', 0);
+                }}
+                onPointerMissed={() => {
+                  console.log('👆 Canvas clicked (pointer missed)');
+                }}
               >
                 {/* J'ai travaillé longtemps sur l'éclairage pour que mon avatar soit parfait */}
                 <ambientLight intensity={2.2} />
@@ -277,29 +219,25 @@ function Accueil({ onNavigate }) {
                 <pointLight position={[2, 6, 4]} intensity={1.5} color="#e8f4fd" />
                 <pointLight position={[-2, 6, 4]} intensity={1.5} color="#e8f4fd" />
                 
-                <group 
-                  rotation={[
-                    (avatarRotation.x * Math.PI) / 180,
-                    (avatarRotation.y * Math.PI) / 180,
-                    (avatarRotation.z * Math.PI) / 180
-                  ]}
-                  scale={[1, 1, 1]}
-                >
+                {/* Protection contre les erreurs - Avatar encapsulé */}
+                <React.Suspense fallback={
+                  <mesh>
+                    <boxGeometry args={[1, 2, 1]} />
+                    <meshStandardMaterial color="gray" />
+                  </mesh>
+                }>
                   <Avatar 
                     scale={2} 
-                    position={[0, -1.8, 0]} 
+                    position={[0, -1.8, 0]}
                     animationType={currentAnimation}
-                    onAnimationChange={handleAvatarAnimationEnd}
                   />
-                </group>
+                </React.Suspense>
                 <OrbitControls 
                   enableZoom={false} 
                   enablePan={false} 
-                  enableRotate={false}
+                  enableRotate={true}
                   autoRotate={autoRotate} 
-                  autoRotateSpeed={0.3} 
-                  minDistance={3}
-                  maxDistance={10}
+                  autoRotateSpeed={0.8} 
                   enableDamping={true}
                   dampingFactor={0.05}
                 />
@@ -312,12 +250,12 @@ function Accueil({ onNavigate }) {
       {/* Ma présentation personnelle */}
       <section className="about-section">
         <div className="container">
-          <h3>👨‍💻 À propos de moi</h3>
+          <h3>À propos de moi</h3>
           <div className="about-content">
             <div className="about-photo-section">
               <img src={process.env.NODE_ENV === 'development' 
-                ? `${process.env.PUBLIC_URL || ''}/photo-profile.png`
-                : '/portfolio-3d/photo-profile.png'} 
+                ? `${process.env.PUBLIC_URL || ''}/photo-profile.jpg`
+                : '/portfolio-3d/photo-profile.jpg'} 
                 alt="Fabrice KOUADJEU" className="about-photo" />
             </div>
             <div className="about-text">
@@ -327,7 +265,7 @@ function Accueil({ onNavigate }) {
               </p>
               <div className="about-highlights">
                 <div className="highlight">
-                  <span className="highlight-icon">🎯</span>
+                  
                   <div>
                     <h4>Spécialisation</h4>
                     <p>Applications web modernes, chatbots IA, intégrations API complexes</p>
@@ -356,10 +294,10 @@ function Accueil({ onNavigate }) {
       {/* Mes compétences techniques */}
       <section className="skills-section">
         <div className="container">
-          <h3>💼 Stack Technique & Compétences</h3>
+          <h3>Stack Technique & Compétences</h3>
           <div className="skills-grid">
             <div className="skill-card">
-              <div className="skill-icon">🎨</div>
+              <div className="skill-icon"></div>
               <h4>Frontend Development</h4>
               <p>Interfaces utilisateur modernes et responsives</p>
               <div className="skill-tags">
@@ -375,10 +313,11 @@ function Accueil({ onNavigate }) {
               </div>
             </div>
             <div className="skill-card">
-              <div className="skill-icon">⚙️</div>
+              <div className="skill-icon"></div>
               <h4>Backend Development</h4>
               <p>Architecture robuste et APIs performantes</p>
               <div className="skill-tags">
+                <span className="skill-tag">Spring Boot</span>
                 <span className="skill-tag">Node.js</span>
                 <span className="skill-tag">Python</span>
                 <span className="skill-tag">Express.js</span>
@@ -391,7 +330,7 @@ function Accueil({ onNavigate }) {
               </div>
             </div>
             <div className="skill-card">
-              <div className="skill-icon">🤖</div>
+              <div className="skill-icon"></div>
               <h4>Intelligence Artificielle</h4>
               <p>Chatbots intelligents et traitement du langage</p>
               <div className="skill-tags">
@@ -406,13 +345,11 @@ function Accueil({ onNavigate }) {
               </div>
             </div>
             <div className="skill-card">
-              <div className="skill-icon">🔧</div>
+              
               <h4>Outils & DevOps</h4>
               <p>Environnement de développement moderne</p>
               <div className="skill-tags">
                 <span className="skill-tag">Git/GitHub</span>
-                <span className="skill-tag">VS Code</span>
-                <span className="skill-tag">Webpack</span>
                 <span className="skill-tag">Docker</span>
                 <span className="skill-tag">Netlify/Vercel</span>
               </div>
@@ -424,93 +361,55 @@ function Accueil({ onNavigate }) {
         </div>
       </section>
 
-      {/* 🎓 SECTION EXPÉRIENCES ET ÉDUCATION inspirée du portfolio */}
+      {/* SECTION EXPÉRIENCES PROFESSIONNELLES */}
       <section className="resume-section">
         <div className="container">
           <div className="row">
-            {/* Éducation */}
-            <div className="col-lg-6 col-12">
-              <h3>🎓 Éducations</h3>
+            <div className="col-lg-12 col-12">
+              <h3>Expériences Professionnelles</h3>
               <div className="timeline">
+                <div className="timeline-wrapper">
+                  <div className="timeline-yr">
+                    <span>2025</span>
+                  </div>
+                  <div className="timeline-info">
+                    <h4><span>Développeur Backend</span><small>Orange (Stage) — Grenoble</small></h4>
+                    <p><strong>Backoffice de gestion de paiements</strong></p>
+                    <p>• Création d'API REST sécurisées (Spring Boot / Spring Security)</p>
+                    <p>• Modélisation et intégration de la logique métier</p>
+                    <p>• Documentation technique & collaboration Agile</p>
+                    <p><em>Impact : amélioration sécurité et fiabilité des paiements</em></p>
+                    <p><small>Février 2025 → Août 2025</small></p>
+                  </div>
+                </div>
+
                 <div className="timeline-wrapper">
                   <div className="timeline-yr">
                     <span>2024</span>
                   </div>
                   <div className="timeline-info">
-                    <h4><span>Master en Ingénierie Logicielle & IA</span></h4>
-                    <small>Compétences acquises</small>
-                    <p>- Architecture et conception d'applications web complexes avec React.js et Three.js</p>
-                    <p>- Développement d'interfaces 3D interactives et expériences utilisateur immersives</p>
-                    <p>- Intégration d'intelligence artificielle dans les applications web modernes</p>
-                    <p>- Optimisation des performances et responsive design avancé</p>
+                    <h4><span>Développeur Full Stack</span><small>LeGrand (Stage) — Limoges</small></h4>
+                    <p><strong>Outil interne de gestion de stock</strong></p>
+                    <p>• Interfaces Angular (formulaires dynamiques & UX)</p>
+                    <p>• Interaction avec APIs internes & BDD PostgreSQL</p>
+                    <p>• Participation à l'architecture modulaire du projet</p>
+                    <p><em>Impact : interface plus fluide → réduction erreurs équipes logistiques</em></p>
+                    <p><small>Avril 2024 → Août 2024</small></p>
                   </div>
                 </div>
 
-                <div className="timeline-wrapper">
-                  <div className="timeline-yr">
-                    <span>2022</span>
-                  </div>
-                  <div className="timeline-info">
-                    <h4><span>Bachelor en Développement Web & Mobile</span></h4>
-                    <small>Compétences acquises</small>
-                    <p>- Développement Full-Stack avec Node.js, React et bases de données</p>
-                    <p>- Création d'APIs REST et intégration de services cloud</p>
-                    <p>- Méthodologies Agile et gestion de projets techniques</p>
-                  </div>
-                </div>
-
-                <div className="timeline-wrapper">
-                  <div className="timeline-yr">
-                    <span>2021</span>
-                  </div>
-                  <div className="timeline-info">
-                    <h4><span>Certification Développement JavaScript Avancé</span></h4>
-                    <small>Compétences acquises</small>
-                    <p>- Maîtrise approfondie de JavaScript ES6+ et frameworks modernes</p>
-                    <p>- Développement d'applications web progressives (PWA)</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Expériences */}
-            <div className="col-lg-6 col-12">
-              <h3>💼 Expériences Professionnelles</h3>
-              <div className="timeline">
                 <div className="timeline-wrapper">
                   <div className="timeline-yr">
                     <span>2024</span>
                   </div>
                   <div className="timeline-info">
-                    <h4><span>Développeur Full-Stack Senior</span><small>Freelance</small></h4>
-                    <p>- Création de portfolios 3D interactifs avec React Three Fiber</p>
-                    <p>- Développement d'applications web modernes avec animations avancées</p>
-                    <p>- Optimisation des performances et intégration de chatbots IA</p>
-                    <p>- Consultation technique pour des startups et PME</p>
-                  </div>
-                </div>
-
-                <div className="timeline-wrapper">
-                  <div className="timeline-yr">
-                    <span>2023</span>
-                  </div>
-                  <div className="timeline-info">
-                    <h4><span>Développeur Frontend React</span><small>TechCorp</small></h4>
-                    <p>- Développement d'interfaces utilisateur complexes avec React.js</p>
-                    <p>- Intégration d'APIs REST et gestion d'état avec Redux</p>
-                    <p>- Collaboration étroite avec les équipes UX/UI et backend</p>
-                  </div>
-                </div>
-
-                <div className="timeline-wrapper">
-                  <div className="timeline-yr">
-                    <span>2022</span>
-                  </div>
-                  <div className="timeline-info">
-                    <h4><span>Développeur Web Junior</span><small>WebStudio</small></h4>
-                    <p>- Participation au développement de sites web responsives</p>
-                    <p>- Apprentissage des meilleures pratiques en développement web</p>
-                    <p>- Intégration de systèmes de gestion de contenu (CMS)</p>
+                    <h4><span>Chatbot Intelligent (IA + Facebook Graph)</span><small>Projet Personnel</small></h4>
+                    <p><strong>Chatbot capable de réponses contextuelles</strong></p>
+                    <p>• Récupération et analyse données via API Graph de Facebook</p>
+                    <p>• Traitement du langage naturel (NLP)</p>
+                    <p>• Interface web simple pour interaction utilisateur</p>
+                    <p><em>Impact : automatisation recherche dans grands volumes de contenu</em></p>
+                    <p><small>Depuis 2024</small></p>
                   </div>
                 </div>
               </div>
@@ -519,77 +418,52 @@ function Accueil({ onNavigate }) {
         </div>
       </section>
 
-      {/* 🛠️ SECTION TECHNOLOGIES ET COMPÉTENCES détaillées */}
-      <section className="technologies-section">
+      {/* SECTION FORMATIONS */}
+      <section className="resume-section">
         <div className="container">
-          <div className="section-title">
-            <h2>🛠️ Mes Compétences et Outils</h2>
-          </div>
-          
-          <div className="tech-grid">
-            <div className="tech-category">
-              <div className="tech-icon">💻</div>
-              <h3 className="tech-title">Langages de Programmation</h3>
-              <div className="tech-list">
-                <span className="tech-item">JavaScript ES6+</span>
-                <span className="tech-item">TypeScript</span>
-                <span className="tech-item">Python</span>
-                <span className="tech-item">HTML5/CSS3</span>
-              </div>
-            </div>
+          <div className="row">
+            {/* Éducation */}
+            <div className="col-lg-12 col-12">
+              <h3>Formations</h3>
+              <div className="timeline">
+                <div className="timeline-wrapper">
+                  <div className="timeline-yr">
+                    <span>2025-2027</span>
+                  </div>
+                  <div className="timeline-info">
+                    <h4><span>Master Développement Full Stack</span><small>ESTIAM — Paris</small></h4>
+                    <p>- Approfondissement de l'architecture logicielle</p>
+                    <p>- Développement web avancé avec React / Three.js</p>
+                    <p>- Conception d'applications interactives</p>
+                    <p>- Technologies immersives et 3D</p>
+                  </div>
+                </div>
 
-            <div className="tech-category">
-              <div className="tech-icon">⚛️</div>
-              <h3 className="tech-title">Frameworks & Bibliothèques</h3>
-              <div className="tech-list">
-                <span className="tech-item">React.js</span>
-                <span className="tech-item">Three.js</span>
-                <span className="tech-item">Node.js</span>
-                <span className="tech-item">Express.js</span>
-              </div>
-            </div>
+                <div className="timeline-wrapper">
+                  <div className="timeline-yr">
+                    <span>2023-2025</span>
+                  </div>
+                  <div className="timeline-info">
+                    <h4><span>Master Manager de Solutions Digitales & Data</span><small>3IL Ingénieur — Limoges</small></h4>
+                    <p>- Conception de systèmes complets</p>
+                    <p>- Gestion de projet technique</p>
+                    <p>- Intégration de solutions digitales</p>
+                    <p>- Architecture et données</p>
+                  </div>
+                </div>
 
-            <div className="tech-category">
-              <div className="tech-icon">🛠️</div>
-              <h3 className="tech-title">Outils de Développement</h3>
-              <div className="tech-list">
-                <span className="tech-item">Git/GitHub</span>
-                <span className="tech-item">VS Code</span>
-                <span className="tech-item">Webpack</span>
-                <span className="tech-item">Docker</span>
-              </div>
-            </div>
-
-            <div className="tech-category">
-              <div className="tech-icon">🗄️</div>
-              <h3 className="tech-title">Bases de Données</h3>
-              <div className="tech-list">
-                <span className="tech-item">MongoDB</span>
-                <span className="tech-item">PostgreSQL</span>
-                <span className="tech-item">MySQL</span>
-                <span className="tech-item">Firebase</span>
-              </div>
-            </div>
-
-            <div className="tech-category">
-              <div className="tech-icon">🔒</div>
-              <h3 className="tech-title">Sécurité & DevOps</h3>
-              <div className="tech-list">
-                <span className="tech-item">JWT</span>
-                <span className="tech-item">OAuth</span>
-                <span className="tech-item">CI/CD</span>
-                <span className="tech-item">Netlify/Vercel</span>
-              </div>
-            </div>
-
-            <div className="tech-category">
-              <div className="tech-icon">👥</div>
-              <h3 className="tech-title">Méthodologies</h3>
-              <div className="tech-list">
-                <span className="tech-item">Agile/Scrum</span>
-                <span className="tech-item">TDD</span>
-                <span className="tech-item">Code Review</span>
-                <span className="tech-item">Git Flow</span>
+                <div className="timeline-wrapper">
+                  <div className="timeline-yr">
+                    <span>2022-2023</span>
+                  </div>
+                  <div className="timeline-info">
+                    <h4><span>Bachelor Développement Web & Mobile</span><small>3IL Ingénieur — Limoges</small></h4>
+                    <p>- Développement full-stack</p>
+                    <p>- APIs REST et bases de données</p>
+                    <p>- Méthodes Agile / Scrum</p>
+                    <p>- Tests unitaires et code review</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -597,6 +471,6 @@ function Accueil({ onNavigate }) {
       </section>
     </div>
   );
-}
+});
 
 export default Accueil;

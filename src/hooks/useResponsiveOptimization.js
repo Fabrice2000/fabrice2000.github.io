@@ -152,7 +152,7 @@ export const useResponsiveOptimization = () => {
  * Hook pour optimiser les performances sur mobile
  */
 export const usePerformanceOptimization = () => {
-  const { isMobile, isTouch } = useResponsiveOptimization();
+  const { isMobile } = useResponsiveOptimization();
   const [shouldReduceAnimations, setShouldReduceAnimations] = useState(false);
   const [shouldOptimizeRendering, setShouldOptimizeRendering] = useState(false);
 
@@ -164,7 +164,7 @@ export const usePerformanceOptimization = () => {
     setShouldReduceAnimations(isMobile || prefersReducedMotion);
     setShouldOptimizeRendering(isMobile);
     
-    // ⚡ Optimisation scroll performance
+    // Optimisation scroll performance
     if (isMobile) {
       // Optimiser les événements de scroll sur mobile
       document.documentElement.style.scrollBehavior = 'smooth';
@@ -256,7 +256,7 @@ export const useImageOptimization = () => {
  * Hook pour la gestion responsive de la navigation
  */
 export const useResponsiveNavigation = () => {
-  const { screenSize, isMobile } = useResponsiveOptimization();
+  const { isMobile } = useResponsiveOptimization();
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [navVariant, setNavVariant] = useState('desktop');
 
@@ -328,7 +328,7 @@ export const useWebGLCompatibility = () => {
  * Hook pour l'optimisation du scroll
  */
 export const useScrollOptimization = () => {
-  const { isMobile, isTouch } = useResponsiveOptimization();
+  const { isMobile } = useResponsiveOptimization();
   const [isScrolling, setIsScrolling] = useState(false);
   const [scrollDirection, setScrollDirection] = useState('down');
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -409,7 +409,7 @@ export const useScrollOptimization = () => {
 };
 
 // Export du hook principal avec des utilitaires
-export default {
+const responsiveHooks = {
   useResponsiveOptimization,
   usePerformanceOptimization,
   useTouchOptimization,
@@ -420,3 +420,5 @@ export default {
   BREAKPOINTS,
   RESPONSIVE_CONFIG
 };
+
+export default responsiveHooks;

@@ -1,4 +1,4 @@
-/* ⚡ OPTIMISATIONS PERFORMANCES - ANIMATIONS RAPIDES ⚡ */
+/* OPTIMISATIONS PERFORMANCES - ANIMATIONS RAPIDES */
 
 /* Accélération de toutes les transitions globales */
 * {
@@ -8,7 +8,7 @@
   perspective: 1000px;
 }
 
-/* 🚀 OPTIMISATIONS SCROLL ULTRA-RAPIDE + FLUIDITÉ */
+/* OPTIMISATIONS SCROLL ULTRA-RAPIDE + FLUIDITÉ */
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 80px;
@@ -184,7 +184,7 @@ body {
   }
 }
 
-/* 📱 OPTIMISATIONS SCROLL MOBILE */
+/* OPTIMISATIONS SCROLL MOBILE */
 @media (max-width: 768px) {
   /* Scroll momentum iOS/Android */
   body, .portfolio-container, .page-content {
@@ -205,7 +205,7 @@ body {
   }
 }
 
-/* 🖱️ OPTIMISATIONS SCROLL DESKTOP */
+/* OPTIMISATIONS SCROLL DESKTOP */
 @media (min-width: 769px) {
   /* Scroll wheel optimisé */
   * {

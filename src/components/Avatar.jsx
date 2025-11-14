@@ -1,108 +1,101 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import { useGLTF, useAnimations } from '@react-three/drei';
 
-// Mon avatar 3D personnalisé avec animations interactives
-function Avatar({ scale = 1, position = [0, 0, 0], animationType = 'marche', onAnimationChange }) {
+const Avatar = React.memo(({ scale = 1, position = [0, 0, 0], animationType = 'marche', onAnimationChange, onError }) => {
   const groupRef = useRef();
   
-  // Modèles disponibles avec leurs chemins
-  const getModelPath = (type) => {
-    const models = {
+  // Mapping des animations vers les fichiers GLB
+  const modelPath = useMemo(() => {
+    const animationFiles = {
       'marche': 'marche en ronde.glb',
       'bonjour': 'bonjour.glb',
       'rumba': 'rumba.glb',
       'hiphop': 'hiphop.glb'
     };
     
-    const modelFile = models[type] || models.marche;
+    const file = animationFiles[animationType] || 'marche en ronde.glb';
+    
     return process.env.NODE_ENV === 'development' 
-      ? `${process.env.PUBLIC_URL || ''}/${modelFile}`
-      : `/portfolio-3d/${modelFile}`;
-  };
+      ? `${process.env.PUBLIC_URL || ''}/${file}`
+      : `/portfolio-3d/${file}`;
+  }, [animationType]);
 
-  const modelPath = getModelPath(animationType);
-  const { scene, animations } = useGLTF(modelPath);
-  const { actions } = useAnimations(animations, scene);
+  console.log('🎬 Loading avatar model:', modelPath, 'for animation:', animationType);
+
+  const gltf = useGLTF(modelPath);
+  const { actions } = useAnimations(gltf.animations, gltf.scene);
 
   useEffect(() => {
-    // Délai réduit pour une transition plus fluide
-    const transitionDelay = setTimeout(() => {
-      // Arrêter toutes les animations précédentes rapidement
+    console.log('🎯 Actions available:', actions ? Object.keys(actions) : 'none');
+    
+    if (!actions) {
+      return;
+    }
+
+    try {
+      // Arrêter toutes les animations
       Object.values(actions).forEach(action => {
-        if (action && action.isRunning()) {
-          action.fadeOut(0.1);
+        if (action) {
+          action.stop();
         }
       });
 
-      // Délai pour permettre le fade-out
-      setTimeout(() => {
-        // Configuration des animations selon le type
-        console.log(`🎭 Chargement animation: ${animationType}`, Object.keys(actions));
-        
-        Object.keys(actions).forEach(actionName => {
-          const action = actions[actionName];
+      // Lancer toutes les animations du modèle
+      Object.keys(actions).forEach(actionName => {
+        const action = actions[actionName];
+        if (action) {
+          console.log('▶️ Playing animation:', actionName);
+          action.reset()
+            .fadeIn(0.5)
+            .play();
+          action.timeScale = animationType === 'marche' ? 1.2 : 1.0;
+        }
+      });
+    } catch (error) {
+      console.error('❌ Animation error:', error);
+      if (onError) onError(error);
+    }
+
+  }, [actions, animationType, onError]);
+
+  useEffect(() => {
+    return () => {
+      if (actions) {
+        Object.values(actions).forEach(action => {
           if (action) {
-            // Configuration selon le type d'animation
-            if (animationType === 'bonjour') {
-              // Animation de salut - jouer une fois puis revenir à la marche
-              action.reset()
-                .setLoop(2200, 1) // Jouer une fois
-                .fadeIn(0.15) // Fade-in stable
-                .play();
-              action.timeScale = 1.2; // Plus rapide
-              
-              // Retour automatique à la marche après l'animation de bonjour
-              action.getMixer().addEventListener('finished', () => {
-                if (onAnimationChange) {
-                  setTimeout(() => onAnimationChange('marche'), 500); // Réduit de 1000ms à 500ms
-                }
-              });
-            } else if (animationType === 'marche') {
-              // Animation de marche en boucle
-              action.reset()
-                .setLoop(2201, 1) // Boucle infinie
-                .fadeIn(0.15) // Fade-in stable
-                .play();
-              action.timeScale = 1.4; // Plus rapide
-            } else {
-              // Animation rumba, hiphop ou autres - en boucle
-              action.reset()
-                .setLoop(2201, 1)
-                .fadeIn(0.15) // Fade-in stable
-                .play();
-              action.timeScale = 1.2; // Plus rapide
-            }
+            action.stop();
           }
         });
-      }, 120); // Petit délai pour le fade-out
-    }, 50); // Délai initial réduit
+      }
+    };
+  }, [actions]);
 
-    return () => clearTimeout(transitionDelay);
-  }, [actions, animationType, onAnimationChange]);
+  if (!gltf || !gltf.scene) {
+    console.error('❌ Avatar loading error: No scene available for', modelPath);
+    if (onError) onError(new Error('Failed to load avatar model'));
+    return null;
+  }
+
+  console.log('✅ Avatar loaded successfully:', modelPath);
 
   return (
     <group ref={groupRef}>
       <primitive 
-        object={scene} 
+        object={gltf.scene} 
         scale={scale} 
         position={position}
-        visible={true}
       />
     </group>
   );
-}
+});
 
-// Préchargement des modèles
-const preloadModels = () => {
-  const models = ['marche en ronde.glb', 'bonjour.glb', 'marche.glb'];
-  models.forEach(model => {
-    const path = process.env.NODE_ENV === 'development' 
-      ? `${process.env.PUBLIC_URL || ''}/${model}`
-      : `/portfolio-3d/${model}`;
-    useGLTF.preload(path);
-  });
-};
-
-preloadModels();
+// Précharger tous les modèles
+['marche en ronde.glb', 'bonjour.glb', 'rumba.glb', 'hiphop.glb'].forEach(file => {
+  const path = process.env.NODE_ENV === 'development' 
+    ? `${process.env.PUBLIC_URL || ''}/${file}`
+    : `/portfolio-3d/${file}`;
+  console.log('🔄 Preloading:', path);
+  useGLTF.preload(path);
+});
 
 export default Avatar;

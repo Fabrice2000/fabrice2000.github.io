@@ -48,7 +48,7 @@ const OpeningAvatar = ({ scale = 2, position = [0, -1.2, 0] }) => {
 };
 
 const IntroPage = ({ onIntroComplete }) => {
-  const [loadingText, setLoadingText] = useState('Chargement');
+  const [loadingText] = useState('Chargement');
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -111,7 +111,7 @@ const IntroPage = ({ onIntroComplete }) => {
       {/* Texte de bienvenue avec animations complètes */}
       <div className="intro-content">
         <h1 className="intro-title">
-          <span className="wave">👋</span> Bonjour !
+          Bonjour !
         </h1>
         <h2 className="intro-subtitle">
           Je suis Fabrice KOUADJEU

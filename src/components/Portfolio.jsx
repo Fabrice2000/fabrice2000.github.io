@@ -1,20 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy, memo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
+import { useScrollOptimization } from '../hooks/useResponsiveOptimization';
 import './Portfolio.css';
 import './ResponsiveFinal.css';
 import './IntroPage.css';
-import './FastAnimations.css'; // ⚡ Optimisations performances
+import './FastAnimations.css';
 
-// Mes différentes sections du portfolio
-import Accueil from './sections/Accueil';
-import Projets from './sections/Projets';
-import Contact from './sections/Contact';
-import Avatar from './Avatar';
-import IntroPage from './IntroPage';
+// Chargement lazy des sections pour réduire le bundle initial
+const Accueil = lazy(() => import('./sections/Accueil'));
+const Projets = lazy(() => import('./sections/Projets'));
+const Contact = lazy(() => import('./sections/Contact'));
+const Avatar = lazy(() => import('./Avatar'));
+const IntroPage = lazy(() => import('./IntroPage'));
 
-// Hooks personnalisés pour la responsivité et optimisations
-import { useScrollOptimization } from '../hooks/useResponsiveOptimization';
+// Composant de fallback pour les sections - Seulement pour IntroPage
+const SectionLoader = memo(() => (
+  <div style={{ 
+    padding: '2rem', 
+    textAlign: 'center', 
+    background: 'rgba(255,255,255,0.1)',
+    borderRadius: '10px',
+    margin: '1rem 0'
+  }}>
+    <div>Chargement...</div>
+  </div>
+));
 
 // Hook personnalisé pour la responsivité
 const useResponsiveAvatar = () => {
@@ -51,15 +62,14 @@ function Portfolio() {
   const [showIntro, setShowIntro] = useState(true);
   const [activeSection, setActiveSection] = useState('accueil');
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [nextSection, setNextSection] = useState('');
   
   // Configuration responsive pour l'avatar
   const avatarConfig = useResponsiveAvatar();
   
-  // ⚡ Hook d'optimisation scroll ultra-rapide
-  const { isScrolling, scrollDirection, scrollToSection } = useScrollOptimization();
+  // Hook d'optimisation scroll ultra-rapide
+  useScrollOptimization();
 
-  // ⚡ Optimisation scroll performance
+  // Optimisation scroll performance
   useEffect(() => {
     // Optimisation du scroll pour de meilleures performances
     const optimizeScroll = () => {
@@ -100,12 +110,10 @@ function Portfolio() {
     
     // Démarrer la transition plus rapide
     setIsTransitioning(true);
-    setNextSection(section);
     
     // Changer la section après un délai réduit pour l'animation
     setTimeout(() => {
       setActiveSection(section);
-      setNextSection('');
       setTimeout(() => {
         setIsTransitioning(false);
       }, 50); // Réduit de 100ms à 50ms
@@ -116,7 +124,9 @@ function Portfolio() {
     <>
       {/* Page d'introduction avec avatar qui marche */}
       {showIntro && (
-        <IntroPage onIntroComplete={handleIntroComplete} />
+        <Suspense fallback={<SectionLoader />}>
+          <IntroPage onIntroComplete={handleIntroComplete} />
+        </Suspense>
       )}
       
       {/* Portfolio principal */}
@@ -138,8 +148,8 @@ function Portfolio() {
         <div className="nav-brand">
           <div className="profile-photo">
             <img src={process.env.NODE_ENV === 'development' 
-              ? `${process.env.PUBLIC_URL || ''}/photo-profile.png`
-              : '/portfolio-3d/photo-profile.png'} 
+              ? `${process.env.PUBLIC_URL || ''}/photo-profile.jpg`
+              : '/portfolio-3d/photo-profile.jpg'} 
               alt="Fabrice KOUADJEU" className="profile-img" />
           </div>
           <h2>Fabrice KOUADJEU</h2>
@@ -147,91 +157,87 @@ function Portfolio() {
         <div className="nav-center">
           <div className="nav-links">
             <button 
-              className={`nav-link ${activeSection === 'accueil' ? 'active' : ''} ${isTransitioning && nextSection === 'accueil' ? 'loading' : ''}`}
+              className={`nav-link ${activeSection === 'accueil' ? 'active' : ''}`}
               onClick={() => navigateToSection('accueil')}
               disabled={isTransitioning}
             >
               Accueil
-              {isTransitioning && nextSection === 'accueil' && <span className="loading-indicator"></span>}
             </button>
             <button 
-              className={`nav-link ${activeSection === 'projets' ? 'active' : ''} ${isTransitioning && nextSection === 'projets' ? 'loading' : ''}`}
+              className={`nav-link ${activeSection === 'projets' ? 'active' : ''}`}
               onClick={() => navigateToSection('projets')}
               disabled={isTransitioning}
             >
               Projets
-              {isTransitioning && nextSection === 'projets' && <span className="loading-indicator"></span>}
             </button>
             <button 
-              className={`nav-link ${activeSection === 'contact' ? 'active' : ''} ${isTransitioning && nextSection === 'contact' ? 'loading' : ''}`}
+              className={`nav-link ${activeSection === 'contact' ? 'active' : ''}`}
               onClick={() => navigateToSection('contact')}
               disabled={isTransitioning}
             >
               Contact
-              {isTransitioning && nextSection === 'contact' && <span className="loading-indicator"></span>}
             </button>
           </div>
         </div>
         <div className="nav-avatar">
-          <Canvas camera={{ position: [0, 0, 5], fov: avatarConfig.fov }}>
-            {/* Éclairage optimisé pour mon avatar 3D */}
-            <ambientLight intensity={1.8} />
+          <Canvas 
+            camera={{ position: [0, 0, 5], fov: avatarConfig.fov }}
+            performance={{ min: 0.5 }}
+            dpr={Math.min(window.devicePixelRatio, 2)}
+            gl={{ 
+              powerPreference: "high-performance",
+              antialias: false,
+              alpha: true
+            }}
+          >
+            {/* Éclairage optimisé réduit pour performances */}
+            <ambientLight intensity={1.5} />
             <directionalLight 
               position={[0, 5, 8]} 
-              intensity={3.5} 
+              intensity={2} 
               color="#ffffff"
             />
-            <pointLight position={[4, 2, 6]} intensity={2} color="#f8f8f8" />
-            <pointLight position={[-4, 2, 6]} intensity={2} color="#f8f8f8" />
-            <pointLight position={[0, -3, 4]} intensity={1.5} color="#f0f0f0" />
-            <directionalLight 
-              position={[0, 0, -6]} 
-              intensity={1.2} 
-              color="#64b5f6"
-            />
-            <Avatar 
-              scale={avatarConfig.scale} 
-              position={avatarConfig.position} 
-            />
+            <pointLight position={[0, 2, 4]} intensity={1} color="#f8f8f8" />
+            <Suspense fallback={null}>
+              <Avatar 
+                scale={avatarConfig.scale} 
+                position={avatarConfig.position} 
+              />
+            </Suspense>
             <OrbitControls 
               enableZoom={false} 
               enablePan={false} 
-              autoRotate 
-              autoRotateSpeed={0.2}
+              autoRotate={window.innerWidth > 768}
+              autoRotateSpeed={0.1}
               enableDamping={true}
-              dampingFactor={0.05}
+              dampingFactor={0.03}
             />
           </Canvas>
         </div>
       </nav>
 
-      {/* Notification de transition */}
-      {isTransitioning && (
-        <div className="transition-notification">
-          <div className="notification-content">
-            <span className="loading-spinner"></span>
-            <span>Chargement de {nextSection === 'accueil' ? 'l\'accueil' : 
-                                  nextSection === 'projets' ? 'mes projets' : 'la page contact'}...</span>
-          </div>
-        </div>
-      )}
-
       <div className={`page-content ${isTransitioning ? 'transitioning' : ''}`}>
         {activeSection === 'accueil' && (
           <div className="section-wrapper fade-in">
-            <Accueil onNavigate={navigateToSection} />
+            <Suspense fallback={null}>
+              <Accueil onNavigate={navigateToSection} />
+            </Suspense>
           </div>
         )}
 
         {activeSection === 'projets' && (
           <div className="section-wrapper fade-in">
-            <Projets onNavigate={navigateToSection} />
+            <Suspense fallback={null}>
+              <Projets onNavigate={navigateToSection} />
+            </Suspense>
           </div>
         )}
 
         {activeSection === 'contact' && (
           <div className="section-wrapper fade-in">
-            <Contact onNavigate={navigateToSection} />
+            <Suspense fallback={null}>
+              <Contact onNavigate={navigateToSection} />
+            </Suspense>
           </div>
         )}
       </div>
@@ -243,9 +249,28 @@ function Portfolio() {
               <h4>Fabrice KOUADJEU NGATCHOU</h4>
               <p>Développeur Full-Stack • Créateur d'expériences numériques</p>
               <div className="footer-social">
-                <span className="social-link">💼 LinkedIn</span>
-                <span className="social-link">🐙 GitHub</span>
-                <span className="social-link">📧 Email</span>
+                <a 
+                  href="https://www.linkedin.com/in/fabrice-kouadjeu-ngatchou-9a7477299" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="social-link"
+                >
+                  LinkedIn
+                </a>
+                <a 
+                  href="https://github.com/Fabrice2000" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="social-link"
+                >
+                  GitHub
+                </a>
+                <a 
+                  href="mailto:kouadjeu_fabrice@yahoo.fr?subject=Contact%20depuis%20votre%20portfolio&body=Bonjour%20Fabrice%2C%0A%0AJe%20vous%20contacte%20suite%20à%20la%20consultation%20de%20votre%20portfolio.%0A%0A" 
+                  className="social-link"
+                >
+                  Email
+                </a>
               </div>
             </div>
             <div className="footer-quick-links">
@@ -262,8 +287,8 @@ function Portfolio() {
             </div>
           </div>
           <div className="footer-bottom">
-            <p>&copy; 2025 Fabrice KOUADJEU NGATCHOU • Portfolio 3D créé avec ❤️ et React</p>
-            <p className="footer-note">Tous droits réservés • Made with passion in Paris 🇫🇷</p>
+            <p>&copy; 2025 Fabrice KOUADJEU NGATCHOU </p>
+            <p className="footer-note">Tous droits réservés</p>
           </div>
         </div>
       </footer>

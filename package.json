@@ -4,6 +4,7 @@
   "homepage": "https://Fabrice2000.github.io/portfolio-3d",
   "private": true,
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@react-three/drei": "^9.88.0",
     "@react-three/fiber": "^8.15.0",
     "react": "^18.2.0",
@@ -20,7 +21,8 @@
     "deploy": "gh-pages -d build"
   },
   "devDependencies": {
-    "gh-pages": "^6.3.0"
+    "gh-pages": "^6.3.0",
+    "gltf-pipeline": "^4.3.0"
   },
   "eslintConfig": {
     "extends": [

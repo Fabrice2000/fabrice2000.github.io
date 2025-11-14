@@ -1,0 +1,74 @@
+/*  OPTIMISATIONS PERFORMANCES - CSS léger et efficace */
+
+/* Réduire les animations coûteuses avec will-change et transform3d */
+.fade-in {
+  opacity: 0;
+  animation: fadeInOptimized 0.6s ease-out forwards;
+  will-change: opacity;
+}
+
+@keyframes fadeInOptimized {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Optimiser les transformations 3D */
+.section-wrapper {
+  transform: translateZ(0); /* Force hardware acceleration */
+  backface-visibility: hidden;
+}
+
+/* Loader optimisé */
+.performance-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  backdrop-filter: blur(5px);
+  will-change: transform;
+}
+
+.performance-loader::after {
+  content: '';
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  will-change: transform;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Réduire les ombres coûteuses */
+.optimized-shadow {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Optimiser les gradients */
+.optimized-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-attachment: fixed;
+}
+
+/* Réduire les filtres backdrop */
+@media (min-width: 768px) {
+  .glass-effect-optimized {
+    backdrop-filter: blur(10px);
+  }
+}
+
+@media (max-width: 767px) {
+  .glass-effect-optimized {
+    backdrop-filter: none;
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
