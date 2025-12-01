@@ -1,15 +1,16 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { useGLTF, useAnimations } from '@react-three/drei';
-import Avatar from './Avatar'; // Avatar de fallback
+import Avatar from './Avatar';
 
-// Préchargement du modèle
+// Je précharge le modèle 3D pour qu'il soit dispo rapidement
 const modelPath = process.env.NODE_ENV === 'development'
   ? `${process.env.PUBLIC_URL || ''}/ouvertureavatar.glb`
-  : '/ouvertureavatar.glb';// Précharger le modèle au chargement du module
+  : '/ouvertureavatar.glb';
+
 useGLTF.preload(modelPath);
 
-// Composant Avatar d'ouverture pour l'intro
+// Mon avatar d'intro avec animation
 const OpeningAvatar = ({ scale = 2, position = [0, -1.2, 0] }) => {
   const gltf = useGLTF(modelPath);
   const { actions } = useAnimations(gltf.animations, gltf.scene);
@@ -21,7 +22,7 @@ const OpeningAvatar = ({ scale = 2, position = [0, -1.2, 0] }) => {
         const action = actions[actionNames[0]];
         action.reset();
         action.setLoop(true, Infinity);
-        action.timeScale = 1.2;
+        action.timeScale = 1.2; // J'ai accéléré un peu l'animation
         action.play();
       }
     }
@@ -34,7 +35,7 @@ const OpeningAvatar = ({ scale = 2, position = [0, -1.2, 0] }) => {
   }, [actions]);
 
   if (!gltf?.scene) {
-    // Fallback vers l'avatar de base si le modèle ne charge pas
+    // Si le modèle charge pas, je bascule sur l'avatar de base
     return (
       <group position={position} scale={scale}>
         <Avatar />
@@ -51,7 +52,7 @@ const IntroPage = ({ onIntroComplete }) => {
 
   useEffect(() => {
 
-    // Progression du chargement - RAPIDE (2.6s max)
+    // Ma barre de progression - j'ai fait en sorte que ce soit rapide (2.6s max)
     const progressInterval = setInterval(() => {
       setProgress(prev => {
         if (prev >= 100) {
@@ -59,9 +60,9 @@ const IntroPage = ({ onIntroComplete }) => {
           setTimeout(onIntroComplete, 300);
           return 100;
         }
-        return prev + 8; // Augmenté de 5 à 8 pour accélérer
+        return prev + 10; // J'incrémente de 10 pour que ça aille vite
       });
-    }, 130); // Réduit de 200ms à 130ms
+    }, 130); // 130ms entre chaque update
 
     return () => {
       clearInterval(progressInterval);
@@ -70,7 +71,7 @@ const IntroPage = ({ onIntroComplete }) => {
 
   return (
     <div className="intro-page">
-      {/* Fond blanc avec particules flottantes */}
+      {/* Mon fond avec des particules qui flottent */}
       <div className="intro-background">
         <div className="floating-particles">
           {[...Array(12)].map((_, i) => (
@@ -87,7 +88,7 @@ const IntroPage = ({ onIntroComplete }) => {
         </div>
       </div>
 
-      {/* Avatar d'ouverture - PREMIER ÉLÉMENT */}
+      {/* L'avatar qui apparaît en premier */}
       <div className="intro-avatar-container">
         <Suspense fallback={<div className="loading-avatar"></div>}>
           <Canvas 

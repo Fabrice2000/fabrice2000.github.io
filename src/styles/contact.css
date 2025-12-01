@@ -1,0 +1,960 @@
+/* MA PAGE CONTACT */
+
+.contact-section {
+  padding: 100px 24px 80px;
+  background: var(--bg-white);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 20px;
+}
+
+/* L'EN-TÊTE */
+
+.section-header {
+  text-align: center;
+  margin-bottom: 80px;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.section-header h2 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: var(--primary-blue);
+  transition: all var(--transition-normal);
+  cursor: pointer;
+  display: inline-block;
+}
+
+.section-header h2:hover {
+  transform: translateY(-2px);
+  color: var(--secondary-blue);
+}
+
+.section-header p {
+  font-size: 1.2rem;
+  color: var(--body-text);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* LE CONTENU - formulaire + infos */
+.contact-content {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr;
+  gap: 60px;
+  align-items: start;
+  margin-top: 64px;
+}
+
+/* MES CARTES D'INFOS DE CONTACT */
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.contact-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px;
+  background: var(--white);
+  border-radius: 16px;
+  border: 2px solid var(--light-blue);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-normal);
+  cursor: pointer;
+  position: relative;
+}
+
+.contact-card:hover {
+  background: var(--light-blue);
+  transform: translateX(5px);
+  border-color: var(--primary-blue);
+  box-shadow: var(--shadow-md);
+}
+
+.contact-details {
+  flex: 1;
+}
+
+.contact-details h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--dark-text);
+  margin-bottom: 6px;
+}
+
+.contact-details p {
+  font-size: 1rem;
+  color: var(--body-text);
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+
+.contact-details a {
+  color: var(--primary-blue);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.contact-details a:hover {
+  color: var(--secondary-blue);
+  text-decoration: underline;
+}
+
+.contact-note {
+  font-size: 0.9rem;
+  color: var(--light-text);
+  font-style: italic;
+  display: block;
+  margin-top: 4px;
+}
+
+/* MES AVANTAGES - pourquoi me choisir */
+.why-choose-me {
+  background: var(--light-blue);
+  padding: 28px;
+  border-radius: 16px;
+  border: 2px solid var(--primary-blue);
+  margin-top: 16px;
+}
+
+.why-choose-me h4 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--primary-blue);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.benefits-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.benefits-list li {
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  background: var(--white);
+  border-radius: 10px;
+  border-left: 4px solid var(--primary-blue); /* J'ai mis une bordure bleue à gauche */
+  font-size: 0.95rem;
+  color: var(--dark-text);
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.benefits-list li:hover {
+  transform: translateX(5px); /* Petit effet de glissement au hover */
+  box-shadow: var(--shadow-sm);
+  background: var(--bg-light);
+}
+
+.contact-details p a:active {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(100, 181, 246, 0.3);
+}
+
+.benefits-list li {
+  font-size: var(--font-base);
+  opacity: 0.9;
+  transition: all var(--transition-normal);
+  padding: var(--spacing-xs) 0;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  padding-left: var(--spacing-sm);
+}
+
+.benefits-list li:hover {
+  opacity: 1;
+  transform: translateX(10px);
+  color: var(--primary-color);
+  background: rgba(255, 255, 255, 0.05);
+  padding-left: var(--spacing-md);
+}
+
+/* MES ANIMATIONS D'ENTRÉE - j'ai décalé chaque carte pour un effet fluide */
+
+.contact-card {
+  animation: slideInLeft 0.6s ease-out;
+}
+
+.contact-card:nth-child(1) { animation-delay: 0.1s; } /* La première carte arrive en premier */
+.contact-card:nth-child(2) { animation-delay: 0.2s; }
+.contact-card:nth-child(3) { animation-delay: 0.3s; }
+.contact-card:nth-child(4) { animation-delay: 0.4s; }
+
+.form-container {
+  animation: slideInRight 0.8s ease-out 0.3s both; /* Le formulaire arrive de la droite */
+}
+
+.why-choose-me {
+  animation: fadeInUp 0.6s ease-out 0.6s both; /* Section avantages en dernier */
+}
+
+@keyframes slideInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* MES MEDIA QUERIES - j'ai rendu tout responsive pour tous les écrans */
+
+/* Tablettes larges (768px - 991px) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .contact-content {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xl);
+  }
+  
+  .contact-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+  }
+  
+  .form-container {
+    padding: var(--spacing-lg);
+  }
+  
+  .section-header h2 {
+    font-size: var(--font-3xl);
+  }
+  
+  .contact-icon {
+    font-size: var(--font-3xl);
+    min-width: 50px;
+  }
+  
+  .contact-details h4 {
+    font-size: var(--font-lg);
+  }
+  
+  .contact-details p {
+    font-size: var(--font-base);
+  }
+}
+
+/* Tablettes moyennes et grands téléphones (576px - 767px) */
+@media (min-width: 576px) and (max-width: 767px) {
+  .contact-section {
+    padding: var(--spacing-xl) var(--spacing-md);
+  }
+  
+  .contact-content {
+    grid-template-columns: 1fr; /* J'empile tout sur une colonne */
+    gap: var(--spacing-lg);
+  }
+  
+  .contact-info {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+  
+  .contact-card {
+    padding: var(--spacing-md);
+  }
+  
+  .contact-icon {
+    font-size: var(--font-2xl);
+    min-width: 40px;
+  }
+  
+  .contact-details h4 {
+    font-size: var(--font-base);
+  }
+  
+  .contact-details p {
+    font-size: var(--font-sm);
+  }
+  
+  .form-container {
+    padding: var(--spacing-md);
+  }
+  
+  .form-container h3 {
+    font-size: var(--font-xl);
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: var(--spacing-sm);
+  }
+  
+  .contact-form .btn-primary {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: var(--font-base);
+  }
+  
+  .section-header h2 {
+    font-size: var(--font-2xl);
+  }
+  
+  .section-header p {
+    font-size: var(--font-base);
+  }
+}
+
+/* Téléphones portables (max 575px) - j'ai tout optimisé pour les petits écrans */
+@media (max-width: 575px) {
+  .contact-section {
+    padding: var(--spacing-lg) var(--spacing-sm);
+    min-height: auto;
+  }
+  
+  .section-header {
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .section-header h2 {
+    font-size: var(--font-xl);
+  }
+  
+  .section-header p {
+    font-size: var(--font-sm);
+  }
+  
+  .contact-content {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+  }
+  
+  .contact-info {
+    gap: var(--spacing-sm);
+  }
+  
+  .contact-card {
+    flex-direction: column; /* Cartes en colonne sur mobile */
+    text-align: center;
+    padding: var(--spacing-md) var(--spacing-sm);
+    gap: var(--spacing-sm);
+  }
+  
+  .contact-card:hover {
+    transform: translateY(-3px); /* Sur mobile je préfère un effet vertical */
+  }
+  
+  .contact-icon {
+    font-size: var(--font-2xl);
+    min-width: auto;
+  }
+  
+  .contact-details h4 {
+    font-size: var(--font-base);
+    margin-bottom: 4px;
+  }
+  
+  .contact-details p {
+    font-size: var(--font-sm);
+    margin-bottom: 2px;
+  }
+  
+  .contact-note {
+    font-size: var(--font-xs);
+  }
+  
+  .form-container {
+    padding: var(--spacing-md);
+  }
+  
+  .form-container h3 {
+    font-size: var(--font-lg);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .contact-form {
+    gap: var(--spacing-md);
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 14px 16px;
+    font-size: 1rem;
+    border-width: 2px;
+    min-height: 48px; /* Assez grand pour les doigts sur mobile */
+  }
+  
+  .form-group textarea {
+    min-height: 140px;
+  }
+  
+  .form-group label {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  
+  .contact-form .btn-primary {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-sm);
+    margin-top: var(--spacing-sm);
+  }
+  
+  .why-choose-me {
+    padding: var(--spacing-md);
+  }
+  
+  .why-choose-me h4 {
+    font-size: var(--font-base);
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .benefits-list {
+    gap: var(--spacing-xs);
+  }
+  
+  .benefits-list li {
+    font-size: var(--font-sm);
+    text-align: center;
+    padding: var(--spacing-xs);
+  }
+  
+  .benefits-list li:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* Très petits téléphones (max 375px) - j'ai tout compacté pour que ça passe bien */
+@media (max-width: 375px) {
+  .contact-section {
+    padding: var(--spacing-md) 8px;
+  }
+  
+  .section-header h2 {
+    font-size: var(--font-lg);
+  }
+  
+  .section-header p {
+    font-size: 12px;
+  }
+  
+  .contact-card {
+    padding: var(--spacing-sm);
+  }
+  
+  .contact-icon {
+    font-size: var(--font-xl);
+  }
+  
+  .contact-details h4 {
+    font-size: var(--font-sm);
+  }
+  
+  .contact-details p {
+    font-size: 12px;
+  }
+  
+  .form-container {
+    padding: var(--spacing-sm);
+  }
+  
+  .form-container h3 {
+    font-size: var(--font-base);
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    min-height: 44px;
+  }
+  
+  .form-group textarea {
+    min-height: 110px;
+  }
+  
+  .form-group label {
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  
+  .contact-form .btn-primary {
+    padding: 12px var(--spacing-md);
+    font-size: 0.95rem;
+  }
+  
+  .why-choose-me h4 {
+    font-size: var(--font-sm);
+  }
+  
+  .benefits-list li {
+    font-size: 12px;
+  }
+}
+
+/* MES OPTIMISATIONS POUR LE TACTILE - pour une meilleure expérience mobile */
+
+@media (max-width: 768px) {
+  /* J'ai agrandi les zones tactiles pour faciliter le clic au doigt */
+  .contact-card,
+  .form-group input,
+  .form-group select,
+  .form-group textarea,
+  .contact-form .btn-primary {
+    min-height: 44px;
+  }
+  
+  /* Je désactive les effets de survol sur mobile (ça sert à rien) */
+  .contact-card:hover,
+  .form-container:hover,
+  .benefits-list li:hover {
+    transform: none;
+  }
+  
+  /* J'optimise les performances */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* J'améliore l'accessibilité du formulaire */
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 16px; /* Évite le zoom automatique sur iOS */
+  }
+}
+
+/* ACCESSIBILITÉ - je respecte les préférences utilisateur */
+
+@media (prefers-reduced-motion: reduce) {
+  /* Je désactive les animations si l'utilisateur préfère */
+  .contact-card,
+  .form-container,
+  .why-choose-me {
+    animation: none;
+  }
+  
+  .contact-icon,
+  .benefits-list li {
+    transition: none;
+  }
+  
+  .contact-card:hover .contact-icon {
+    transform: none;
+  }
+}
+
+@media (prefers-contrast: high) {
+  /* J'augmente le contraste si nécessaire */
+  .contact-card,
+  .form-container,
+  .why-choose-me {
+    border: 2px solid rgba(72, 72, 72, 0.5);
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    border: 2px solid rgba(30, 28, 28, 0);
+  }
+  
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: white;
+  }
+}
+
+/* STYLES D'IMPRESSION - pour avoir un bon rendu si on imprime la page */
+
+@media print {
+  .contact-form,
+  .why-choose-me {
+    display: none !important; /* J'affiche pas le formulaire à l'impression */
+  }
+  
+  .contact-content {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .contact-card {
+    background: none !important;
+    border: 1px solid black !important;
+    color: black !important;
+  }
+  
+  .contact-details h4 {
+    color: rgb(0, 0, 0) !important;
+  }
+  
+  .section-header h2 {
+    color: rgb(232, 232, 241) !important;
+    background: none !important;
+    -webkit-text-fill-color: initial !important;
+  }
+}
+
+/* MON FORMULAIRE DE CONTACT - l'élément principal de la page */
+.contact-form-container {
+  background: #FFFFFF;
+  border-radius: 24px;
+  padding: 3rem 2.5rem; /* J'ai mis assez d'espace pour que ce soit confortable */
+  border: 2px solid #2563EB;
+  box-shadow: 0 15px 45px rgba(37, 99, 235, 0.15);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: visible;
+  max-width: 100%;
+  margin: 0 auto;
+  min-height: 650px; /* Hauteur optimale pour le formulaire */
+}
+
+.contact-form-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #2563EB, #1E40AF, #2563EB); /* Ma barre bleue en haut */
+  border-radius: 24px 24px 0 0;
+}
+
+.contact-form-container:hover {
+  transform: translateY(-5px); /* Petit effet de levée au hover */
+  box-shadow: 0 20px 55px rgba(37, 99, 235, 0.25);
+  border-color: #1E40AF;
+}
+
+.contact-form-container h3 {
+  color: #2563EB;
+  margin-bottom: 2.5rem;
+  font-size: 2.2rem;
+  font-weight: 700;
+  text-align: center;
+  position: relative;
+  padding-bottom: 1.2rem;
+  letter-spacing: -0.3px;
+}
+
+.contact-form-container h3::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 4px;
+  background: linear-gradient(90deg, #2563EB, #1E40AF); /* Petite barre décorative sous le titre */
+  border-radius: 2px;
+  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.35);
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+  max-width: 100%;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Deux colonnes pour nom/prénom */
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  position: relative;
+  width: 100%;
+}
+
+.form-group label {
+  color: #1f2937;
+  font-weight: 600;
+  font-size: 1.05rem;
+  letter-spacing: -0.1px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 1.2rem 1.1rem;
+  border: 2px solid #2563EB; /* Ma bordure bleue signature */
+  border-radius: 12px;
+  background: #FFFFFF;
+  color: #1f2937;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 52px;
+  font-weight: 500;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #1E40AF;
+  background: rgba(37, 99, 235, 0.03);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15); /* Effet de focus bien visible */
+  transform: translateY(-2px);
+}
+
+.form-group input:hover,
+.form-group select:hover,
+.form-group textarea:hover {
+  border-color: #1E40AF;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical; /* L'utilisateur peut agrandir verticalement */
+  min-height: 160px;
+  max-height: 350px;
+  line-height: 1.7;
+}
+
+.error-text {
+  color: #dc2626; /* Rouge pour les erreurs */
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-top: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.form-group:has(.error-text) input,
+.form-group:has(.error-text) select,
+.form-group:has(.error-text) textarea {
+  border-color: #dc2626; /* Je mets la bordure en rouge si erreur */
+  background: rgba(220, 38, 38, 0.03);
+}
+
+.btn-submit {
+  background: linear-gradient(135deg, #2563EB, #1E40AF); /* Mon beau dégradé bleu */
+  color: #FFFFFF;
+  border: none;
+  padding: 1.4rem 3rem;
+  border-radius: 12px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  margin-top: 1.5rem;
+  width: 100%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  min-height: 60px; /* Bien grand pour être facile à cliquer */
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.3);
+}
+
+.btn-submit:hover:not(:disabled) {
+  transform: translateY(-3px); /* Effet de levée au hover */
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4);
+  background: linear-gradient(135deg, #1E40AF, #1e3a8a);
+}
+
+.btn-submit:active:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #94a3b8; /* Grisé quand désactivé */
+}
+
+.success-message {
+  text-align: center;
+  padding: 3rem;
+  background: linear-gradient(135deg, #2563EB, #1E40AF);
+  border-radius: 20px;
+  color: #FFFFFF;
+  box-shadow: 0 12px 40px rgba(37, 99, 235, 0.4);
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.success-message h4 {
+  margin-bottom: 1.2rem;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.error-message {
+  background: linear-gradient(135deg, #f44336, #e53935); /* Dégradé rouge pour les erreurs */
+  color: white;
+  padding: 1.2rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Responsive formulaire - Tablettes */
+@media (max-width: 1024px) {
+  .contact-content {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  
+  .contact-form-container {
+    order: -1; /* Le formulaire passe en premier sur tablette */
+    min-height: 600px;
+    padding: 2.8rem 2.5rem;
+  }
+  
+  .contact-info {
+    order: 1;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Responsive formulaire - Mobile */
+@media (max-width: 768px) {
+  .contact-content {
+    gap: 2rem;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr; /* Une colonne sur mobile */
+    gap: 1.2rem;
+  }
+  
+  .contact-form {
+    gap: 1.5rem;
+  }
+  
+  .contact-form-container {
+    padding: 2.5rem 1.8rem;
+    min-height: 550px;
+  }
+  
+  .contact-form-container h3 {
+    font-size: 1.9rem;
+    margin-bottom: 2rem;
+  }
+  
+  .contact-info {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .form-group label {
+    font-size: 1rem;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 1.1rem 1rem;
+    font-size: 1rem;
+    min-height: 50px;
+  }
+  
+  .form-group textarea {
+    min-height: 150px;
+  }
+  
+  .btn-submit {
+    padding: 1.3rem 2.5rem;
+    font-size: 1.1rem;
+    min-height: 56px;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-section {
+    padding: 60px 16px 50px;
+  }
+  
+  .contact-form-container {
+    padding: 2rem 1.3rem;
+    min-height: 500px;
+    border-width: 2px;
+  }
+  
+  .contact-form-container h3 {
+    font-size: 1.7rem;
+    margin-bottom: 1.8rem;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 1rem 0.9rem;
+    font-size: 0.95rem;
+    min-height: 48px;
+  }
+  
+  .form-group textarea {
+    min-height: 140px;
+  }
+  
+  .form-group label {
+    font-size: 0.95rem;
+  }
+  
+  .btn-submit {
+    padding: 1.2rem 2rem;
+    font-size: 1.05rem;
+    min-height: 54px;
+  }
+  
+  .contact-info {
+    gap: 1.2rem;
+  }
+  
+  .contact-card {
+    padding: 1.5rem;
+  }
+}

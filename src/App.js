@@ -1,10 +1,10 @@
 import React, { Suspense, lazy } from 'react';
-import './components/GlobalStyles.css';
+import './styles/global.css';
 
-// Chargement lazy du composant principal pour réduire le bundle initial
+// Je charge le Portfolio en lazy pour optimiser le chargement initial
 const Portfolio = lazy(() => import('./components/Portfolio'));
 
-// Composant de fallback pendant le chargement
+// Mon écran de chargement pendant que tout se met en place
 const LoadingFallback = () => (
   <div style={{ 
     display: 'flex', 

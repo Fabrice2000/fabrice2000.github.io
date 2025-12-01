@@ -1,17 +1,10 @@
 import React, { useState, useEffect, Suspense, lazy, memo } from 'react';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
 import { useScrollOptimization } from '../hooks/useResponsiveOptimization';
-import './Portfolio.css';
-import './ResponsiveFinal.css';
-import './IntroPage.css';
-import './FastAnimations.css';
 
 // Chargement lazy des sections pour réduire le bundle initial
 const Accueil = lazy(() => import('./sections/Accueil'));
 const Projets = lazy(() => import('./sections/Projets'));
 const Contact = lazy(() => import('./sections/Contact'));
-const Avatar = lazy(() => import('./Avatar'));
 const IntroPage = lazy(() => import('./IntroPage'));
 
 // Composant de fallback pour les sections - Seulement pour IntroPage
@@ -27,44 +20,10 @@ const SectionLoader = memo(() => (
   </div>
 ));
 
-// Hook personnalisé pour la responsivité
-const useResponsiveAvatar = () => {
-  const [screenSize, setScreenSize] = useState('desktop');
-  
-  useEffect(() => {
-    const updateScreenSize = () => {
-      const width = window.innerWidth;
-      if (width >= 1400) setScreenSize('xl');
-      else if (width >= 992) setScreenSize('desktop');
-      else if (width >= 768) setScreenSize('tablet');
-      else if (width >= 576) setScreenSize('mobile');
-      else setScreenSize('xs');
-    };
-    
-    updateScreenSize();
-    window.addEventListener('resize', updateScreenSize);
-    return () => window.removeEventListener('resize', updateScreenSize);
-  }, []);
-  
-  // Configuration responsive pour l'avatar
-  const avatarConfig = {
-    xl: { fov: 45, scale: 1.6, position: [0, -1.2, 0] },
-    desktop: { fov: 45, scale: 1.5, position: [0, -1.2, 0] },
-    tablet: { fov: 50, scale: 1.4, position: [0, -1.1, 0] },
-    mobile: { fov: 55, scale: 1.3, position: [0, -1.0, 0] },
-    xs: { fov: 60, scale: 1.2, position: [0, -0.9, 0] }
-  };
-  
-  return avatarConfig[screenSize];
-};
-
 function Portfolio() {
   const [showIntro, setShowIntro] = useState(true);
   const [activeSection, setActiveSection] = useState('accueil');
   const [isTransitioning, setIsTransitioning] = useState(false);
-  
-  // Configuration responsive pour l'avatar
-  const avatarConfig = useResponsiveAvatar();
   
   // Hook d'optimisation scroll ultra-rapide
   useScrollOptimization();
@@ -179,41 +138,6 @@ function Portfolio() {
             </button>
           </div>
         </div>
-        <div className="nav-avatar">
-          <Canvas 
-            camera={{ position: [0, 0, 5], fov: avatarConfig.fov }}
-            performance={{ min: 0.5 }}
-            dpr={Math.min(window.devicePixelRatio, 2)}
-            gl={{ 
-              powerPreference: "high-performance",
-              antialias: false,
-              alpha: true
-            }}
-          >
-            {/* Éclairage optimisé réduit pour performances */}
-            <ambientLight intensity={1.5} />
-            <directionalLight 
-              position={[0, 5, 8]} 
-              intensity={2} 
-              color="#ffffff"
-            />
-            <pointLight position={[0, 2, 4]} intensity={1} color="#f8f8f8" />
-            <Suspense fallback={null}>
-              <Avatar 
-                scale={avatarConfig.scale} 
-                position={avatarConfig.position} 
-              />
-            </Suspense>
-            <OrbitControls 
-              enableZoom={false} 
-              enablePan={false} 
-              autoRotate={window.innerWidth > 768}
-              autoRotateSpeed={0.1}
-              enableDamping={true}
-              dampingFactor={0.03}
-            />
-          </Canvas>
-        </div>
       </nav>
 
       <div className={`page-content ${isTransitioning ? 'transitioning' : ''}`}>
@@ -247,7 +171,7 @@ function Portfolio() {
           <div className="footer-content">
             <div className="footer-info">
               <h4>Fabrice KOUADJEU NGATCHOU</h4>
-              <p>Développeur Full-Stack • Créateur d'expériences numériques</p>
+              <p>Alternant Développeur Fullstack • Master ESTIAM Paris</p>
               <div className="footer-social">
                 <a 
                   href="https://www.linkedin.com/in/fabrice-kouadjeu-ngatchou-9a7477299" 
@@ -266,7 +190,7 @@ function Portfolio() {
                   GitHub
                 </a>
                 <a 
-                  href="mailto:kouadjeu_fabrice@yahoo.fr?subject=Contact%20depuis%20votre%20portfolio&body=Bonjour%20Fabrice%2C%0A%0AJe%20vous%20contacte%20suite%20à%20la%20consultation%20de%20votre%20portfolio.%0A%0A" 
+                  href="mailto:kouadjeu_fabrice@yahoo.com?subject=Contact%20depuis%20votre%20portfolio&body=Bonjour%20Fabrice%2C%0A%0AJe%20vous%20contacte%20suite%20à%20la%20consultation%20de%20votre%20portfolio.%0A%0A" 
                   className="social-link"
                 >
                   Email
@@ -280,6 +204,9 @@ function Portfolio() {
               </button>
               <button onClick={() => navigateToSection('projets')} className="footer-link">
                 Projets
+              </button>
+              <button onClick={() => navigateToSection('competences')} className="footer-link">
+                Compétences
               </button>
               <button onClick={() => navigateToSection('contact')} className="footer-link">
                 Contact

@@ -1,17 +1,13 @@
-/* ===========================================
-   STYLES RESPONSIFS - Section Contact
-   =========================================== */
-
-/* ===========================================
+/*
    SECTION CONTACT PRINCIPALE
-   =========================================== */
+   */
 
 .contact-section {
   padding: 80px 32px;
   background: linear-gradient(135deg, 
-    rgba(0, 0, 0, 0.2) 0%, 
-    rgba(100, 181, 246, 0.1) 50%, 
-    rgba(0, 0, 0, 0.3) 100%);
+    rgba(255, 255, 255, 0.95) 0%, 
+    rgba(227, 242, 253, 0.9) 50%, 
+    rgba(255, 255, 255, 0.95) 100%);
   backdrop-filter: blur(10px);
   min-height: 100vh;
   display: flex;
@@ -24,9 +20,9 @@
   width: 100%;
 }
 
-/* ===========================================
+/* 
    EN-TÊTE DE SECTION
-   =========================================== */
+    */
 
 .section-header {
   text-align: center;
@@ -38,7 +34,7 @@
   font-size: 3rem;
   font-weight: 700;
   margin-bottom: 24px;
-  background: linear-gradient(45deg, #fff, #64b5f6, #f093fb);
+  background: linear-gradient(45deg, #1976D2, #2196F3, #64B5F6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -49,20 +45,21 @@
 
 .section-header h2:hover {
   transform: scale(1.05) translateY(-2px);
-  text-shadow: 0 5px 15px rgba(100, 181, 246, 0.3);
+  text-shadow: 0 5px 15px rgba(33, 150, 243, 0.3);
 }
 
 .section-header p {
   font-size: 1.2rem;
+  color: #1976D2;
   opacity: 0.9;
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.6;
 }
 
-/* ===========================================
+/* 
    CONTENU PRINCIPAL RESPONSIVE
-   =========================================== */
+    */
 
 .contact-content {
   display: grid;
@@ -72,9 +69,9 @@
   margin-top: 64px;
 }
 
-/* ===========================================
+/*
    INFORMATIONS DE CONTACT
-   =========================================== */
+    */
 
 .contact-info {
   display: flex;
@@ -154,9 +151,8 @@
   font-style: italic;
 }
 
-/* ===========================================
-   SECTION FORMULAIRE
-   =========================================== */
+/*   SECTION FORMULAIRE
+   */
 
 .contact-form-section {
   display: flex;
@@ -205,9 +201,9 @@
   z-index: 1;
 }
 
-/* ===========================================
+/*
    FORMULAIRE RESPONSIVE
-   =========================================== */
+   */
 
 .contact-form {
   display: flex;
@@ -289,7 +285,7 @@
   transition: all var(--transition-normal);
   position: relative;
   overflow: hidden;
-  box-shadow: 0 8px 25px rgba(100, 181, 246, 0.3);
+  box-shadow: 0 8px 25px rgba(219, 225, 230, 0.3);
 }
 
 .contact-form .btn-primary::before {
@@ -318,9 +314,9 @@
   box-shadow: 0 8px 20px rgba(100, 181, 246, 0.3);
 }
 
-/* ===========================================
+/* 
    SECTION AVANTAGES
-   =========================================== */
+   */
 
 .why-choose-me {
   background: rgba(100, 181, 246, 0.1);
@@ -382,9 +378,9 @@
   padding-left: var(--spacing-md);
 }
 
-/* ===========================================
+/* 
    ANIMATIONS D'ENTRÉE
-   =========================================== */
+   */
 
 .contact-card {
   animation: slideInLeft 0.6s ease-out;
@@ -436,9 +432,9 @@
   }
 }
 
-/* ===========================================
+/* 
    MEDIA QUERIES RESPONSIVES
-   =========================================== */
+  /
 
 /* Large Tablets (768px - 991px) */
 @media (min-width: 768px) and (max-width: 991px) {
@@ -705,9 +701,9 @@
   }
 }
 
-/* ===========================================
+/* 
    OPTIMISATIONS POUR L'INTERACTION TACTILE
-   =========================================== */
+  */
 
 @media (max-width: 768px) {
   /* Améliorer les zones tactiles */
@@ -739,9 +735,9 @@
   }
 }
 
-/* ===========================================
+/* 
    ACCESSIBILITÉ ET PRÉFÉRENCES UTILISATEUR
-   =========================================== */
+  */
 
 @media (prefers-reduced-motion: reduce) {
   .contact-card,
@@ -780,9 +776,9 @@
   }
 }
 
-/* ===========================================
+/* 
    PRINT STYLES
-   =========================================== */
+   */
 
 @media print {
   .contact-form,

@@ -1,10 +1,9 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import emailjs from '@emailjs/browser';
-import './Contact.css';
-import './ContactForm.css';
+import '../../styles/contact.css';
 
 function Contact({ onNavigate }) {
-  // EmailJS configuration
+  // Config EmailJS - j'ai mis mes clés dans le .env
   const EMAILJS_CONFIG = useMemo(() => {
     const config = {
       serviceId: process.env.REACT_APP_EMAILJS_SERVICE_ID,
@@ -13,13 +12,13 @@ function Contact({ onNavigate }) {
     };
 
     if (!config.serviceId || !config.templateId || !config.publicKey) {
-      console.error('EmailJS configuration missing. Check your .env file');
+      console.error('Oups, il manque la config EmailJS. Vérifiez le fichier .env');
     }
 
     return config;
   }, []);
 
-  // Component state
+  // Les states pour gérer le formulaire
   const [formData, setFormData] = useState({
     from_name: '',
     from_email: '',
@@ -40,7 +39,7 @@ function Contact({ onNavigate }) {
 
   const [validationErrors, setValidationErrors] = useState({});
 
-  // Form options
+  // Les options pour les select du formulaire
   const projectTypes = [
     { value: '', label: 'Sélectionnez un type' },
     { value: 'Site Web / Application', label: 'Site Web / Application' },
@@ -74,14 +73,14 @@ function Contact({ onNavigate }) {
     { value: 'Flexible', label: 'Flexible' }
   ];
 
-  // Validation
+  // Mes fonctions de validation
   const validateEmail = useCallback((email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   }, []);
 
   const validatePhone = useCallback((phone) => {
-    if (!phone) return true; // Optionnel
+    if (!phone) return true; // Le tel est optionnel
     // eslint-disable-next-line no-useless-escape
     const phoneRegex = /^[\d\s\-\+\(\)\.]{8,20}$/;
     return phoneRegex.test(phone);
@@ -90,14 +89,14 @@ function Contact({ onNavigate }) {
   const validateForm = useCallback(() => {
     const errors = {};
 
-    // Validation nom
+    // Je vérifie le nom
     if (!formData.from_name?.trim()) {
       errors.from_name = 'Le nom est requis';
     } else if (formData.from_name.trim().length < 2) {
       errors.from_name = 'Le nom doit contenir au moins 2 caractères';
     }
 
-    // Validation email
+    // Je vérifie l'email
     if (!formData.from_email?.trim()) {
       errors.from_email = 'L\'email est requis';
     } else if (!validateEmail(formData.from_email)) {
@@ -269,10 +268,10 @@ ${data.message}
           <h4>Email</h4>
           <p>
             <a 
-              href="mailto:kouadjeungatchou@gmail.com?subject=Contact%20depuis%20votre%20portfolio"
+              href="mailto:kouadjeu_fabrice@yahoo.com?subject=Contact%20depuis%20votre%20portfolio"
               style={{color: 'inherit', textDecoration: 'none'}}
             >
-              kouadjeungatchou@gmail.com
+              kouadjeu_fabrice@yahoo.com
             </a>
           </p>
           <span className="contact-note">Réponse sous 24h</span>
@@ -280,7 +279,6 @@ ${data.message}
       </div>
       
       <div className="contact-card">
-        <div className="contact-icon"></div>
         <div className="contact-details">
           <h4>Téléphone</h4>
           <p>07 58 72 58 45</p>
@@ -289,25 +287,22 @@ ${data.message}
       </div>
       
       <div className="contact-card">
-        <div className="contact-icon"></div>
         <div className="contact-details">
           <h4>Localisation</h4>
           <p>Paris, France</p>
-          <span className="contact-note">Remote friendly</span>
+          <span className="contact-note">Mobile en fonction des missions</span>
         </div>
       </div>
       
       <div className="contact-card">
-        <div className="contact-icon"></div>
         <div className="contact-details">
           <h4>Langues</h4>
-          <p> Français •  English</p>
+          <p>Français • English</p>
           <span className="contact-note">Communication fluide</span>
         </div>
       </div>
 
       <div className="contact-card">
-        <div className="contact-icon"></div>
         <div className="contact-details">
           <h4>LinkedIn</h4>
           <p>
@@ -325,7 +320,6 @@ ${data.message}
       </div>
 
       <div className="contact-card">
-        <div className="contact-icon"></div>
         <div className="contact-details">
           <h4>GitHub</h4>
           <p>

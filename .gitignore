@@ -1,7 +1,7 @@
-# Dans le terminal
+
 cd "/Users/fabricekouadjeu/Downloads/react et blender"
 
-# Changer l'URL avec la vraie URL de votre repo
+
 git remote set-url origin https://github.com/VOTRE-USERNAME/portfolio-3d.git
 
 # Pousser le code

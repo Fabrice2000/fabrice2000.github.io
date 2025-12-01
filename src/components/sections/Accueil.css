@@ -1,6 +1,6 @@
-/* ===========================================
+/*
    STYLES RESPONSIFS - Section Accueil
-   =========================================== */
+  */
 
 /* Variables spécifiques à l'accueil - COULEURS ORIGINALES PRÉSERVÉES */
 :root {
@@ -11,11 +11,11 @@
   --avatar-size-small: 280px;
 }
 
-/* Container principal de l'accueil */
+
 .accueil-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-  color: white;
+  background: linear-gradient(135deg, #FFFFFF 0%, #E3F2FD 50%, #BBDEFB 100%);
+  color: #1a1a1a;
   position: relative;
   opacity: 0;
   transform: translateY(40px);
@@ -27,9 +27,6 @@
   transform: translateY(0);
 }
 
-/* ===========================================
-   HERO SECTION RESPONSIVE
-   =========================================== */
 
 .hero-section {
   min-height: 100vh;
@@ -71,9 +68,9 @@
   z-index: 2;
 }
 
-/* ===========================================
+/* 
    CONTENU TEXTUEL RESPONSIVE
-   =========================================== */
+ */
 
 .text-content {
   z-index: 10;
@@ -83,67 +80,13 @@
 /* Animation d'entrée */
 .greeting-animation {
   overflow: hidden;
-  animation: slideInFromLeft 1s ease-out;
 }
 
-@keyframes slideInFromLeft {
-  0% {
-    opacity: 0;
-    transform: translateX(-100px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.hero-title {
-  font-size: 4rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  background: linear-gradient(45deg, #fff, #64b5f6, #f093fb);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  line-height: 1.1;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  animation: fadeInUp 0.8s ease-out 0.3s both;
-}
-
-@keyframes fadeInUp {
-  0% {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.hero-title:hover {
-  transform: scale(1.02);
-  background: linear-gradient(45deg, #f093fb, #64b5f6, #fff, #42a5f5);
-  background-size: 200% 200%;
-  animation: gradientShift 2s ease infinite;
-}
-
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
+/* Hero title - sans style */
 
 .wave {
   display: inline-block;
   animation: wave 2s infinite;
-  transition: transform 0.3s ease;
-}
-
-.wave:hover {
-  animation: fastWave 0.5s ease infinite;
-  transform: scale(1.2);
 }
 
 @keyframes wave {
@@ -162,18 +105,16 @@
   font-size: 2.2rem;
   margin-bottom: 0.5rem;
   opacity: 0.9;
-  color: #64b5f6;
+  color: #1976D2;
   font-weight: 500;
-  animation: fadeInUp 0.8s ease-out 0.6s both;
 }
 
 .hero-role {
   font-size: 1.4rem;
   margin-bottom: 2rem;
-  color: #64b5f6;
+  color: #2196F3;
   font-style: italic;
   opacity: 0.8;
-  animation: fadeInUp 0.8s ease-out 0.9s both;
 }
 
 .hero-description {
@@ -183,9 +124,6 @@
   line-height: 1.7;
 }
 
-/* ===========================================
-   STATISTIQUES RESPONSIVE
-   =========================================== */
 
 .hero-stats {
   display: grid;
@@ -206,17 +144,17 @@
 }
 
 .stat:hover {
-  background: rgba(100, 181, 246, 0.2);
+  background: rgba(33, 150, 243, 0.2);
   transform: translateY(-3px) scale(1.02);
-  border-color: rgba(100, 181, 246, 0.3);
-  box-shadow: 0 8px 25px rgba(100, 181, 246, 0.3);
+  border-color: rgba(33, 150, 243, 0.3);
+  box-shadow: 0 8px 25px rgba(33, 150, 243, 0.3);
 }
 
 .stat-number {
   display: block;
   font-size: 2rem;
   font-weight: 700;
-  color: #64b5f6;
+  color: #2196F3;
   margin-bottom: 0.5rem;
 }
 
@@ -225,9 +163,9 @@
   opacity: 0.9;
 }
 
-/* ===========================================
+/* 
    BOUTONS RESPONSIVE
-   =========================================== */
+   */
 
 .hero-buttons {
   display: flex;
@@ -237,21 +175,21 @@
 }
 
 .btn-primary {
-  background: linear-gradient(45deg, #64b5f6, #42a5f5);
+  background: linear-gradient(45deg, #2196F3, #1976D2);
   color: white;
-  box-shadow: 0 4px 15px rgba(100, 181, 246, 0.3);
+  box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
 }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(33, 150, 243, 0.1);
+  color: #1976D2;
+  border: 2px solid rgba(33, 150, 243, 0.3);
   backdrop-filter: blur(10px);
 }
 
-/* ===========================================
+/* 
    AVATAR 3D RESPONSIVE
-   =========================================== */
+    */
 
 .avatar-section {
   display: flex;
@@ -305,9 +243,9 @@
   height: 100% !important;
 }
 
-/* ===========================================
+/* 
    CONTRÔLES D'ANIMATION AVATAR
-   =========================================== */
+   */
 
 .avatar-animation-controls {
   position: relative;
@@ -419,9 +357,9 @@
   50% { opacity: 0.6; }
 }
 
-/* ===========================================
+/* 
    CONTRÔLE AVATAR PRINCIPAL
-   =========================================== */
+    */
 
 .main-avatar-control {
   position: absolute;
@@ -452,9 +390,9 @@
   transform: scale(1.05);
 }
 
-/* ===========================================
+/* 
    SECTIONS À PROPOS ET COMPÉTENCES
-   =========================================== */
+  */
 
 .about-section,
 .skills-section {
@@ -493,9 +431,9 @@
   text-shadow: 0 5px 15px rgba(100, 181, 246, 0.3);
 }
 
-/* ===========================================
+/* 
    CONTENU À PROPOS RESPONSIVE
-   =========================================== */
+ */
 
 .about-content {
   display: grid;
@@ -566,9 +504,9 @@
   transform: scale(1.1) rotate(5deg);
 }
 
-/* ===========================================
+/* 
    GRILLE DE COMPÉTENCES RESPONSIVE
-   =========================================== */
+   */
 
 .skills-grid {
   display: grid;
@@ -638,52 +576,7 @@
   transition: width 2s ease-in-out;
 }
 
-/* ===========================================
-   ANIMATIONS D'ENTRÉE CASCADÉE
-   =========================================== */
 
-.accueil-container.loaded .hero-title {
-  animation: slideInFromLeft 0.8s ease-out 0.2s both;
-}
-
-.accueil-container.loaded .hero-subtitle {
-  animation: slideInFromLeft 0.8s ease-out 0.4s both;
-}
-
-.accueil-container.loaded .hero-role {
-  animation: slideInFromLeft 0.8s ease-out 0.6s both;
-}
-
-.accueil-container.loaded .hero-description {
-  animation: fadeInUp 0.8s ease-out 0.8s both;
-}
-
-.accueil-container.loaded .hero-stats {
-  animation: fadeInUp 0.8s ease-out 1s both;
-}
-
-.accueil-container.loaded .hero-buttons {
-  animation: fadeInUp 0.8s ease-out 1.2s both;
-}
-
-.accueil-container.loaded .avatar-container {
-  animation: scaleIn 1s ease-out 0.5s both;
-}
-
-@keyframes slideInFromLeft {
-  0% {
-    opacity: 0;
-    transform: translateX(-60px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-/* ===========================================
-   MEDIA QUERIES RESPONSIVE
-   =========================================== */
 
 /* Large Tablets (768px - 991px) */
 @media (min-width: 768px) and (max-width: 991px) {
@@ -730,10 +623,6 @@
     padding: 10px 12px;
   }
   
-  .hero-title {
-    font-size: var(--font-4xl);
-  }
-  
   .hero-subtitle {
     font-size: var(--font-2xl);
   }
@@ -769,10 +658,6 @@
     grid-template-columns: 1fr;
     gap: var(--spacing-lg);
     text-align: center;
-  }
-  
-  .hero-title {
-    font-size: var(--font-3xl);
   }
   
   .hero-subtitle {
@@ -853,11 +738,6 @@
   
   .text-content {
     padding: var(--spacing-sm);
-  }
-  
-  .hero-title {
-    font-size: var(--font-2xl);
-    line-height: 1.2;
   }
   
   .hero-subtitle {
@@ -955,10 +835,6 @@
     --avatar-size-desktop: 250px;
   }
   
-  .hero-title {
-    font-size: var(--font-xl);
-  }
-  
   .hero-subtitle {
     font-size: var(--font-base);
   }
@@ -977,9 +853,9 @@
   }
 }
 
-/* ===========================================
+/* 
    OPTIMISATIONS POUR L'INTERACTION TACTILE
-   =========================================== */
+   */
 
 @media (max-width: 768px) {
   /* Désactiver les effets de survol sur mobile */
@@ -1006,9 +882,9 @@
   }
 }
 
-/* ===========================================
+/* 
    ACCESSIBILITÉ ET PRÉFÉRENCES UTILISATEUR
-   =========================================== */
+    */
 
 /* Réduction des animations pour ceux qui préfèrent moins de mouvement */
 @media (prefers-reduced-motion: reduce) {
@@ -1029,7 +905,6 @@
 
 /* Mode contraste élevé */
 @media (prefers-contrast: high) {
-  .hero-title,
   .section-title {
     color: white;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -1042,9 +917,9 @@
   }
 }
 
-/* ===========================================
+/* 
    PRINT STYLES
-   =========================================== */
+    */
 
 @media print {
   .hero-section::before,
@@ -1063,7 +938,6 @@
   .section-title {
     color: black !important;
     background: none !important;
-    -webkit-text-fill-color: initial !important;
   }
   
   .about-photo {

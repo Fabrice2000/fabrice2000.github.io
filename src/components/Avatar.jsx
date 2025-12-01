@@ -4,7 +4,7 @@ import { useGLTF, useAnimations } from '@react-three/drei';
 const Avatar = React.memo(({ scale = 1, position = [0, 0, 0], animationType = 'marche', onAnimationChange, onError }) => {
   const groupRef = useRef();
   
-  // Mapping des animations vers les fichiers GLB
+  // Je mappe chaque type d'animation à son fichier GLB
   const modelPath = useMemo(() => {
     const animationFiles = {
       'marche': 'marche en ronde.glb',
@@ -15,44 +15,46 @@ const Avatar = React.memo(({ scale = 1, position = [0, 0, 0], animationType = 'm
     
     const file = animationFiles[animationType] || 'marche en ronde.glb';
     
+    // Je gère les chemins différemment en dev et en prod
     return process.env.NODE_ENV === 'development' 
       ? `${process.env.PUBLIC_URL || ''}/${file}`
       : `/${file}`;
   }, [animationType]);
 
-  console.log('🎬 Loading avatar model:', modelPath, 'for animation:', animationType);
+  console.log('🎬 Je charge le modèle:', modelPath, 'pour l\'animation:', animationType);
 
   const gltf = useGLTF(modelPath);
   const { actions } = useAnimations(gltf.animations, gltf.scene);
 
   useEffect(() => {
-    console.log('🎯 Actions available:', actions ? Object.keys(actions) : 'none');
+    console.log('🎯 Actions disponibles:', actions ? Object.keys(actions) : 'aucune');
     
     if (!actions) {
       return;
     }
 
     try {
-      // Arrêter toutes les animations
+      // J'arrête d'abord toutes les animations en cours
       Object.values(actions).forEach(action => {
         if (action) {
           action.stop();
         }
       });
 
-      // Lancer toutes les animations du modèle
+      // Puis je lance toutes les animations du modèle
       Object.keys(actions).forEach(actionName => {
         const action = actions[actionName];
         if (action) {
-          console.log('▶️ Playing animation:', actionName);
+          console.log('▶️ Je lance l\'animation:', actionName);
           action.reset()
             .fadeIn(0.5)
             .play();
+          // J'accélère un peu la marche pour que ce soit plus dynamique
           action.timeScale = animationType === 'marche' ? 1.2 : 1.0;
         }
       });
     } catch (error) {
-      console.error('❌ Animation error:', error);
+      console.error('❌ Erreur d\'animation:', error);
       if (onError) onError(error);
     }
 
